@@ -1,0 +1,21 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  row-gap: 14px;
+}
+
+.grid label {
+  color: #929292;
+}
+
+.inputCheckbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.checkboxContainer {
+  text-align: right;
+  margin-right: 50px;
+}
