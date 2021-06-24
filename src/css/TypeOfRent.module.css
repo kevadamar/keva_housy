@@ -1,14 +1,18 @@
 .button {
-  padding: 15px 39px;
-  margin-right: 35px;
-  border: 0;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
+  background-color: rgba(196, 196, 196, 0.25);
+  color: black;
+  border-color: rgba(196, 196, 196, 0.25);
+  transition: none;
+  padding: 12px 27px;
+}
+.button:focus,
+.button:hover {
+  color: white;
+  background-color: #5a57ab;
+  border-color: #5a57ab;
+  box-shadow: none;
 }
 .active {
   background-color: #5a57ab;
   color: white;
 }
-/* text color background: #929292;
- */

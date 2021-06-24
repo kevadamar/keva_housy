@@ -1,47 +1,42 @@
 import { useState } from 'react';
 import Styles from '../css/Aminities.module.css';
 
-const Aminities = () => {
+const Aminities = ({ stateAminities, handleAminities }) => {
   const [isChecked, setIsChecked] = useState({
-    furnished: true,
+    furnished: false,
     petAllowed: false,
     sharedAccomodation: false,
   });
 
-  const handleChecked = (e) => {
-    setIsChecked({ ...isChecked, [e.target.name]: e.target.checked });
+  const handleChecked = (e, id) => {
+    handleAminities({ id, status: !isChecked[e.target.name] });
+    setIsChecked((currentState) => ({
+      ...currentState,
+      [e.target.name]: !currentState[e.target.name],
+    }));
   };
 
+  const keyp = ['furnished', 'petAllowed', 'sharedAccomodation'];
+
   return (
-    <div className={Styles.grid}>
-      <label>Furnished</label>
-      <div className={Styles.checkboxContainer}>
-        <input
-          className={Styles.inputCheckbox}
-          type="checkbox"
-          onChange={handleChecked}
-          name="furnished"
-          checked={isChecked.furnished}
-        />
-      </div>
-      <label>Pet Allowed</label>
-      <div className={Styles.checkboxContainer}>
-        <input
-          className={Styles.inputCheckbox}
-          type="checkbox"
-          onChange={handleChecked}
-          name="petAllowed"
-        />
-      </div>
-      <label>Shared Accomodation</label>
-      <div className={Styles.checkboxContainer}>
-        <input
-          className={Styles.inputCheckbox}
-          type="checkbox"
-          onChange={handleChecked}
-          name="sharedAccomodation"
-        />
-      </div>
+    <div>
+      {stateAminities &&
+        stateAminities.map((item, index) => {
+          return (
+            <span key={index} className={Styles.grid}>
+              <label>{item.name}</label>
+              <div className={Styles.checkboxContainer}>
+                <input
+                  className={Styles.inputCheckbox}
+                  type="checkbox"
+                  onChange={(e) => handleChecked(e, item.id)}
+                  name={keyp[index]}
+                  checked={item.status}
+                />
+              </div>
+            </span>
+          );
+        })}
     </div>
   );
 };

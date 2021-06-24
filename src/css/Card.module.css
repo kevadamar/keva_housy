@@ -1,16 +1,14 @@
 .card {
-  position: relative;
-  width: 265px;
+  margin-bottom: 10px;
   padding: 10px;
-  border-radius: 5px;
-  height: 240px;
-  border: 3px solid rgb(196, 196, 196);
+  background-color: transparent;
+  border: 3px solid lightgrey;
 }
 
 .amenities {
-  position: absolute;
+  /* position: absolute;
   top: 17px;
-  left: 20px;
+  left: 20px; */
   background: white;
   color: black;
   width: 110px;
@@ -21,18 +19,20 @@
   font-size: 0.75em;
 }
 
-.price {
-  color: black;
-  font-weight: bold;
-  font-size: 13px;
+.amenitiesContainer {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-.detail {
-  color: black;
-  font-weight: 600;
-  font-size: 9px;
+.cardBody {
+  padding: 0.25rem;
 }
 
-.pb10{
-    padding-bottom: 10px;
+.cardTextContent {
+  margin-bottom: 0;
 }

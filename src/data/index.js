@@ -1,8 +1,4 @@
-import Styles from '../css/Content.module.css';
-import Card from './Card';
-import Sidebar from './Sidebar';
-
-const items = [
+export const items = [
   {
     id: 1,
     price: 'Rp. 9.000.000',
@@ -14,7 +10,7 @@ const items = [
       },
       {
         name: 'Baths',
-        qty: 1,
+        qty: 5,
       },
       {
         name: 'sqft',
@@ -22,7 +18,23 @@ const items = [
       },
     ],
     address: 'Tangerang Selata, Pondok Aren',
-    amenities: 'Furnished',
+    amenities:[
+      {
+        id:1,
+        name: 'Furnished',
+        status: true
+      },
+      {
+        id:2,
+        name: 'Pet Allowed',
+        status: false
+      },
+      {
+        id: 3,
+        name: 'Shared Accomodation',
+        status: true,
+      },
+    ],
   },
   {
     id: 2,
@@ -35,7 +47,7 @@ const items = [
       },
       {
         name: 'Baths',
-        qty: 1,
+        qty: 3,
       },
       {
         name: 'sqft',
@@ -43,7 +55,23 @@ const items = [
       },
     ],
     address: 'Tangerang Selata, Pondok Aren',
-    amenities: 'Furnished',
+    amenities:[
+      {
+        id:1,
+        name: 'Furnished',
+        status: true
+      },
+      {
+        id:2,
+        name: 'Pet Allowed',
+        status: true
+      },
+      {
+        id: 3,
+        name: 'Shared Accomodation',
+        status: true,
+      },
+    ],
   },
   {
     id: 3,
@@ -64,7 +92,23 @@ const items = [
       },
     ],
     address: 'Tangerang Selata, Pondok Aren',
-    amenities: 'Furnished',
+    amenities:[
+      {
+        id:1,
+        name: 'Furnished',
+        status: false
+      },
+      {
+        id:2,
+        name: 'Pet Allowed',
+        status: true
+      },
+      {
+        id: 3,
+        name: 'Shared Accomodation',
+        status: true,
+      },
+    ],
   },
   {
     id: 4,
@@ -73,7 +117,7 @@ const items = [
     detailProperyRoom: [
       {
         name: 'Beds',
-        qty: 1,
+        qty: 3,
       },
       {
         name: 'Baths',
@@ -85,7 +129,23 @@ const items = [
       },
     ],
     address: 'Tangerang Selata, Pondok Aren',
-    amenities: 'Furnished',
+    amenities:[
+      {
+        id:1,
+        name: 'Furnished',
+        status: true
+      },
+      {
+        id:2,
+        name: 'Pet Allowed',
+        status: true
+      },
+      {
+        id: 3,
+        name: 'Shared Accomodation',
+        status: true,
+      },
+    ],
   },
   {
     id: 5,
@@ -94,7 +154,7 @@ const items = [
     detailProperyRoom: [
       {
         name: 'Beds',
-        qty: 1,
+        qty: 3,
       },
       {
         name: 'Baths',
@@ -106,7 +166,23 @@ const items = [
       },
     ],
     address: 'Tangerang Selata, Pondok Aren',
-    amenities: 'Furnished',
+    amenities:[
+      {
+        id:1,
+        name: 'Furnished',
+        status: true
+      },
+      {
+        id:2,
+        name: 'Pet Allowed',
+        status: true
+      },
+      {
+        id: 3,
+        name: 'Shared Accomodation',
+        status: true,
+      },
+    ],
   },
   {
     id: 6,
@@ -127,7 +203,23 @@ const items = [
       },
     ],
     address: 'Tangerang Selata, Pondok Aren',
-    amenities: 'Furnished',
+    amenities:[
+      {
+        id:1,
+        name: 'Furnished',
+        status: true
+      },
+      {
+        id:2,
+        name: 'Pet Allowed',
+        status: true
+      },
+      {
+        id: 3,
+        name: 'Shared Accomodation',
+        status: true,
+      },
+    ],
   },
   {
     id: 7,
@@ -148,7 +240,23 @@ const items = [
       },
     ],
     address: 'Tangerang Selata, Pondok Aren',
-    amenities: 'Furnished',
+    amenities:[
+      {
+        id:1,
+        name: 'Furnished',
+        status: true
+      },
+      {
+        id:2,
+        name: 'Pet Allowed',
+        status: true
+      },
+      {
+        id: 3,
+        name: 'Shared Accomodation',
+        status: true,
+      },
+    ],
   },
   {
     id: 8,
@@ -169,7 +277,23 @@ const items = [
       },
     ],
     address: 'Tangerang Selata, Pondok Aren',
-    amenities: 'Furnished',
+    amenities:[
+      {
+        id:1,
+        name: 'Furnished',
+        status: true
+      },
+      {
+        id:2,
+        name: 'Pet Allowed',
+        status: true
+      },
+      {
+        id: 3,
+        name: 'Shared Accomodation',
+        status: true,
+      },
+    ],
   },
   {
     id: 9,
@@ -190,25 +314,22 @@ const items = [
       },
     ],
     address: 'Tangerang Selata, Pondok Aren',
-    amenities: 'Furnished',
+    amenities:[
+      {
+        id:1,
+        name: 'Furnished',
+        status: true
+      },
+      {
+        id:2,
+        name: 'Pet Allowed',
+        status: true
+      },
+      {
+        id: 3,
+        name: 'Shared Accomodation',
+        status: true,
+      },
+    ],
   },
 ];
-
-const Content = () => {
-  return (
-    <>
-      <main>
-        <div className={Styles.sideContent}>
-          <Sidebar />
-        </div>
-        <div className={Styles.mainContent}>
-          <div className={Styles.gridContent}>
-            {items && items.map((item) => <Card key={item.id} item={item} />)}
-          </div>
-        </div>
-      </main>
-    </>
-  );
-};
-
-export default Content;

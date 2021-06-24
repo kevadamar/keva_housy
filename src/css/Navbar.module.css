@@ -6,15 +6,19 @@
 }
 
 .searchInput {
-  border: 0;
-  background-color: transparent;
+  border: inherit;
+  background-color: rgba(196, 196, 196, 0.25);
   width: 300px;
-  height: 18px;
-  padding: 20px 0 20px 20px;
 }
 
 .searchInput::placeholder {
   color: black;
+}
+
+.searchInput:focus {
+  box-shadow: none;
+  border: none;
+  background-color: rgba(196, 196, 196, 0.25);
 }
 
 .button {
@@ -25,18 +29,29 @@
   border-radius: 5px;
 }
 
-.signInBtn {
-  color: darkgrey;
-  background: inherit;
+.fontBold {
+  font-weight: bold;
+}
+
+.signUpBtn {
+  color: black;
+  background-color: rgba(196, 196, 196, 0.25);
+}
+
+.inputGroupAppend {
+  margin-left: 0;
 }
 
 .srcButton {
-  font-size: 23px;
-  max-width: 44px;
-  min-height: 34px;
-  display: inline-block;
-  width: 40px;
-  text-align: center;
+  background-color: rgba(196, 196, 196, 0.25);
+  color: black;
+  font-weight: bold;
+  border: inherit;
+}
+
+.srcButton:hover {
+  background-color: #5a57ab;
+  font-weight: bold;
 }
 
 .searchBox {

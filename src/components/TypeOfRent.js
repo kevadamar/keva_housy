@@ -1,17 +1,49 @@
 import { useState } from 'react';
+import { Container } from 'react-bootstrap';
 import Styles from '../css/TypeOfRent.module.css';
+import ButtonReuse from './utils/ButtonReuse';
 
-const TypeOfRent = () => {
+const TypeOfRent = ({ handleTypeOfRent }) => {
   const [isSelected, setIsSelected] = useState('day');
 
   const handleClicked = (e) => {
-    setIsSelected(e.target.name);
+    const { name } = e.target;
+    console.log(name)
+    handleTypeOfRent(name);
+    setIsSelected(name);
   };
 
   return (
-    <>
-      <div>
-        <button
+    <Container
+      className="d-flex justify-content-between"
+      fluid
+      style={{ paddingLeft: '0' }}
+    >
+      <ButtonReuse
+        className={`${isSelected === 'day' && Styles.active} ${Styles.button}`}
+        variant="secondary"
+        onClick={handleClicked}
+        name="day"
+      >
+        Day
+      </ButtonReuse>
+      <ButtonReuse
+        className={`${isSelected === 'month' && Styles.active} ${Styles.button}`}
+        variant="secondary"
+        onClick={handleClicked}
+        name="month"
+      >
+        Month
+      </ButtonReuse>
+      <ButtonReuse
+        className={`${isSelected === 'year' && Styles.active} ${Styles.button}`}
+        variant="secondary"
+        onClick={handleClicked}
+        name="year"
+      >
+        Year
+      </ButtonReuse>
+      {/* <button
           className={`${Styles.button} ${
             isSelected === 'day' && Styles.active
           }`}
@@ -37,9 +69,8 @@ const TypeOfRent = () => {
           name="year"
         >
           Year
-        </button>
-      </div>
-    </>
+        </button> */}
+    </Container>
   );
 };
 export default TypeOfRent;

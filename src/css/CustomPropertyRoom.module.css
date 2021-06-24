@@ -1,6 +1,5 @@
 .button {
   padding: 13px 21px;
-  margin-right: 35px;
   border: 0;
   font-weight: bold;
   border-radius: 5px;
@@ -11,5 +10,8 @@
   background-color: #5a57ab;
   color: white;
 }
-/* text color background: #929292;
- */
+@media (max-width: 960px) {
+  .button{
+    margin-bottom: 10px;
+  }
+}
