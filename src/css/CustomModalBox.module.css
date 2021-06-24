@@ -1,0 +1,7 @@
+.modalHeader {
+  justify-content: center;
+  border-bottom: none;
+}
+.modalBody {
+  margin: 0 15px;
+}

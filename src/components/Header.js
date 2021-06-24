@@ -8,6 +8,7 @@ import userIconSvg from '../assets/images/user-icon.svg';
 
 import Styles from '../css/Navbar.module.css';
 import { items as data } from '../data';
+import ModalSignin from './ModalSignin';
 
 const Header = () => {
   const [login, setLogin] = useState(false);
@@ -16,36 +17,80 @@ const Header = () => {
   const router = useHistory();
 
   // state search box
-  const [search, setSearch] = useState('');
+  const [getSearch, setSearch] = useState('');
+
+  // state handle form login
+  const [formLogin, setFormLogin] = useState({
+    username: '',
+    password: '',
+  });
+
+  //state handle modal box
+  const [show, setShow] = useState({
+    signIn: false,
+    signUp: false,
+    nameSignIn: 'signIn',
+    nameSignUp: 'signUp',
+  });
+
+  // handle submit login
+  const handleSubmitLogin = (payload) => {
+    setFormLogin((currentState) => ({ ...currentState, payload }));
+    setLogin((currentState) => !currentState);
+  };
 
   // handle search
   const handleSearch = (e) => {
     setSearch(e.target.value);
   };
 
+  const handleModalTitle = ({ name }) => {
+    setShow((currentState) => ({ ...currentState, [name]: true }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const product = data.find((item) => item.address === search);
+    const product = data.find((item) => item.restaurant === getSearch);
 
     if (product) {
       return router.push(`/product/${product.id}`);
     }
   };
 
+  const handleLogout = () => {
+    setShow({
+      signIn: false,
+      signUp: false,
+      nameSignIn: 'signIn',
+      nameSignUp: 'signUp',
+    });
+    setLogin((currentState) => !currentState);
+  };
+
   const BtnNotLogin = () => {
     return (
       <>
+        <ModalSignin
+          show={show.signIn}
+          handleClose={() =>
+            setShow((currentState) => ({
+              ...currentState,
+              [show.nameSignIn]: false,
+            }))
+          }
+          handleSubmitLogin={handleSubmitLogin}
+        />
         <Button
           className={`${Styles.fontBold} mr-3 my-2`}
           style={{ color: 'darkgrey' }}
-          onClick={() => setLogin((currentState) => !currentState)}
+          onClick={() => handleModalTitle({ name: show.nameSignIn })}
           variant="light-secondary"
         >
           Sign in
         </Button>
         <Button
           className={`${Styles.signUpBtn} ${Styles.fontBold} my-2`}
-          onClick={() => setLogin((currentState) => !currentState)}
+          onClick={() => handleModalTitle({ name: 'signUp' })}
           variant="light-secondary"
         >
           Sign up
@@ -69,7 +114,7 @@ const Header = () => {
               className={`${Styles.searchInput} mr-auto`}
               aria-describedby="search-button"
               name="search"
-              value={search}
+              value={getSearch}
               onChange={handleSearch}
             />
             <span className="bg-identity" style={{ fontSize: '23px' }}>
@@ -88,10 +133,11 @@ const Header = () => {
         </Form>
         {login ? (
           <img
+            className={Styles.img}
             src={userIconSvg}
             alt="username"
             height="50px"
-            onClick={() => setLogin((currentState) => !currentState)}
+            onClick={handleLogout}
           />
         ) : (
           <BtnNotLogin />

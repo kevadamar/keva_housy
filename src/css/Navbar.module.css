@@ -5,6 +5,12 @@
   padding: 15px 30px;
 }
 
+.img:hover{
+  cursor: pointer;
+  transform: scale(1.1);
+  transition: cubic-bezier(0.075, 0.82, 0.165, .5);
+}
+
 .searchInput {
   border: inherit;
   background-color: rgba(196, 196, 196, 0.25);
