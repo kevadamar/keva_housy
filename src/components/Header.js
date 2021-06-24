@@ -9,6 +9,7 @@ import userIconSvg from '../assets/images/user-icon.svg';
 import Styles from '../css/Navbar.module.css';
 import { items as data } from '../data';
 import ModalSignin from './ModalSignin';
+import ModalSignup from './ModalSignup';
 
 const Header = () => {
   const [login, setLogin] = useState(false);
@@ -25,6 +26,14 @@ const Header = () => {
     password: '',
   });
 
+  // state handle form sign up
+  const [formSignup, setFormSignup] = useState({
+    username: '',
+    password: '',
+    fullname: '',
+    email: '',
+  });
+
   //state handle modal box
   const [show, setShow] = useState({
     signIn: false,
@@ -34,8 +43,14 @@ const Header = () => {
   });
 
   // handle submit login
-  const handleSubmitLogin = (payload) => {
+  const handleSubmitSignin = (payload) => {
     setFormLogin((currentState) => ({ ...currentState, payload }));
+    setLogin((currentState) => !currentState);
+  };
+
+  // handle submit login
+  const handleSubmitSignup = (payload) => {
+    setFormSignup((currentState) => ({ ...currentState, payload }));
     setLogin((currentState) => !currentState);
   };
 
@@ -44,13 +59,14 @@ const Header = () => {
     setSearch(e.target.value);
   };
 
-  const handleModalTitle = ({ name }) => {
+  const handleModalTitle = ({ title, name }) => {
     setShow((currentState) => ({ ...currentState, [name]: true }));
+    // setTitle(title);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const product = data.find((item) => item.restaurant === getSearch);
+    const product = data.find((item) => item.address === getSearch);
 
     if (product) {
       return router.push(`/product/${product.id}`);
@@ -78,19 +94,31 @@ const Header = () => {
               [show.nameSignIn]: false,
             }))
           }
-          handleSubmitLogin={handleSubmitLogin}
+          handleSubmitLogin={handleSubmitSignin}
         />
         <Button
           className={`${Styles.fontBold} mr-3 my-2`}
           style={{ color: 'darkgrey' }}
-          onClick={() => handleModalTitle({ name: show.nameSignIn })}
+          onClick={() =>
+            handleModalTitle({ title: 'Sign In', name: show.nameSignIn })
+          }
           variant="light-secondary"
         >
           Sign in
         </Button>
+        <ModalSignup
+          show={show.signUp}
+          handleClose={() =>
+            setShow((currentState) => ({
+              ...currentState,
+              [show.nameSignUp]: false,
+            }))
+          }
+          handleSubmitSignup={handleSubmitSignup}
+        />
         <Button
           className={`${Styles.signUpBtn} ${Styles.fontBold} my-2`}
-          onClick={() => handleModalTitle({ name: 'signUp' })}
+          onClick={() => handleModalTitle({ title: 'Sign Up', name: 'signUp' })}
           variant="light-secondary"
         >
           Sign up
