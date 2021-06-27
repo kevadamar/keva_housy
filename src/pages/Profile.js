@@ -1,12 +1,13 @@
 import { useContext, useEffect } from 'react';
 import { Col, Container, Image, Row } from 'react-bootstrap';
 
-import imgProfile from '../assets/images/img-profile.png';
-import Biodata from '../components/Biodata';
-import ButtonReuse from '../components/utils/ButtonReuse';
 import { SearchContext } from '../contexts/SearchContext';
 import { HIDE, SHOW } from '../contexts/SearchContext/action';
 import { UserContext } from '../contexts/UserContext';
+
+import imgProfile from '../assets/images/img-profile.png';
+import Biodata from '../components/Biodata';
+import ButtonReuse from '../components/utils/ButtonReuse';
 
 const Profile = () => {
   const { dispatch: dispatchSearch } = useContext(SearchContext);
@@ -30,7 +31,7 @@ const Profile = () => {
             </Col>
             <Col md={3}>
               <Image src={imgProfile} fluid />
-              <ButtonReuse className="mt-5" variant="secondary" block>
+              <ButtonReuse className="mt-5" style={{ backgroundColor: '#5A57AB', color: ' white' }} block>
                 Change Photo Profile
               </ButtonReuse>
             </Col>

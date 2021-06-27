@@ -15,7 +15,7 @@ const Biodata = ({ user }) => {
       <Container fluid className="px-0 d-flex align-items-center py-2">
         <span className="pr-3">
           <i
-            style={{ fontSize: '2.5em' }}
+            style={{color:'grey', fontSize: '2.5em' }}
             className="fa fa-user-circle"
             aria-hidden="true"
           ></i>
@@ -29,7 +29,7 @@ const Biodata = ({ user }) => {
       <Container fluid className="px-0 d-flex align-items-center py-2">
         <span className="pr-3">
           <i
-            style={{ fontSize: '2.5em' }}
+            style={{color:'grey', fontSize: '2.5em' }}
             className="fa fa-envelope"
             aria-hidden="true"
           ></i>
@@ -43,7 +43,7 @@ const Biodata = ({ user }) => {
       <Container fluid className="px-0 d-flex align-items-center py-2">
         <span className="pr-3">
           <i
-            style={{ fontSize: '3.5em' }}
+            style={{color:'grey', fontSize: '3.5em' }}
             className="fa fa-lock"
             aria-hidden="true"
           ></i>
@@ -51,7 +51,7 @@ const Biodata = ({ user }) => {
         <span className="d-flex flex-column">
           <h5
             className="mb-0 text-primary"
-            style={{ cursor: 'pointer' }}
+            style={{color:'grey', cursor: 'pointer' }}
             onClick={() => setShowModal(true)}
           >
             Change Password
@@ -63,7 +63,7 @@ const Biodata = ({ user }) => {
       <Container fluid className="px-0 d-flex align-items-center py-2">
         <span className="pr-3">
           <i
-            style={{ fontSize: '2.5em' }}
+            style={{color:'grey', fontSize: '2.5em' }}
             className="fa fa-certificate"
             aria-hidden="true"
           ></i>
@@ -77,7 +77,7 @@ const Biodata = ({ user }) => {
       <Container fluid className="px-0 d-flex align-items-center py-2">
         <span className="pr-3">
           <i
-            style={{ fontSize: '2.5em' }}
+            style={{color:'grey', fontSize: '2.5em' }}
             className="fa fa-transgender"
             aria-hidden="true"
           ></i>
@@ -93,7 +93,7 @@ const Biodata = ({ user }) => {
       <Container fluid className="px-0 d-flex align-items-center py-2">
         <span className="pr-3">
           <i
-            style={{ fontSize: '2.5em' }}
+            style={{color:'grey', fontSize: '2.5em' }}
             className="fa fa-phone"
             aria-hidden="true"
           ></i>
@@ -107,7 +107,7 @@ const Biodata = ({ user }) => {
       <Container fluid className="px-0 d-flex align-items-center py-2">
         <span className="pr-3">
           <i
-            style={{ fontSize: '3em' }}
+            style={{color:'grey', fontSize: '3em' }}
             className="fa fa-map-marker"
             aria-hidden="true"
           ></i>
