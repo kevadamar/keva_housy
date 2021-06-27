@@ -88,9 +88,15 @@ const Sidebar = ({ handleFilter }) => {
     e.preventDefault();
 
     // filter by price,duration,aminities,detail property,
-    const resultsByDuration = data.filter(
-      (item) => item.duration === payload.duration,
-    );
+    const resultsByDuration = data.filter((item) => {
+      if (!payload.duration) {
+        return true;
+      }
+      if (item.duration === payload.duration) {
+        return true;
+      }
+      return false;
+    });
 
     // filter by price
     const resultsByPrice = (resultsByDuration) =>
