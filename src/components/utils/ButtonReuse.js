@@ -1,7 +1,7 @@
 import { Button } from 'react-bootstrap';
 
 const ButtonReuse = (props) => {
-  const { variant, type, style, block, className, onClick, name } = props;
+  const { variant, type, style, block, className, onClick, name,disabled } = props;
   return (
     <Button
       className={`${className} shadow-none`}
@@ -11,6 +11,7 @@ const ButtonReuse = (props) => {
       style={style}
       block={block}
       onClick={onClick}
+      disabled={disabled}
     >
       {props.children}
     </Button>

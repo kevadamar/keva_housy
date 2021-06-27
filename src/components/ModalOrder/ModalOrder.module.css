@@ -1,0 +1,55 @@
+.date {
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+  height: 50px;
+}
+
+.modalBody {
+    margin: 0 15px;
+  }
+
+.separator {
+  font-size: 32px;
+  height: 54px;
+  margin-left: 27px;
+  margin-right: 20px;
+  color: #d2d2d2;
+}
+
+.dropdownIcon {
+  position: absolute;
+  right: 20px;
+  font-size: 2.5em;
+  z-index: -1;
+  color: #524faf;
+}
+
+.datePicker {
+  margin-left: -40px;
+  width: 375px;
+  height: 50px;
+  background: none !important;
+  border: none !important;
+  padding: 0px 70px;
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.datePicker:hover {
+  cursor: pointer;
+}
+
+.caretDown::before{
+    top: 50px;
+    right: 15px;
+    content: '';
+    border: 13px solid transparent;
+    border-top: 19px solid #5a57ab;
+    margin-left: 2px;
+    margin-bottom: 3px;
+    display: inline-block;
+    vertical-align: bottom;
+    position: absolute;
+  }
