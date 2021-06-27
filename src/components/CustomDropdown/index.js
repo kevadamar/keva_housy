@@ -25,7 +25,7 @@ const CustomDropdown = ({ handleLogout }) => {
         <div
           className={Styles.dropdownMenu}
           onClick={() => {
-            // router.push('/profile');
+            router.push('/profile');
           }}
         >
           <img
@@ -40,7 +40,7 @@ const CustomDropdown = ({ handleLogout }) => {
         <div
           className={Styles.dropdownMenu}
           onClick={() => {
-            // router.push('/booking');
+            router.push('/booking');
           }}
         >
           <img
@@ -55,7 +55,7 @@ const CustomDropdown = ({ handleLogout }) => {
         <div
           className={Styles.dropdownMenu}
           onClick={() => {
-            // router.push('/history');
+            router.push('/history');
           }}
         >
           <img
@@ -76,7 +76,7 @@ const CustomDropdown = ({ handleLogout }) => {
         <div
           className={Styles.dropdownMenu}
           onClick={() => {
-            // router.push('/profile');
+            router.push('/profile');
           }}
         >
           <img
@@ -91,7 +91,7 @@ const CustomDropdown = ({ handleLogout }) => {
         <div
           className={Styles.dropdownMenu}
           onClick={() => {
-            // router.push('/owner/add');
+            router.push('/owner/add');
           }}
         >
           <img
@@ -106,7 +106,7 @@ const CustomDropdown = ({ handleLogout }) => {
         <div
           className={Styles.dropdownMenu}
           onClick={() => {
-            // router.push('/owner/history');
+            router.push('/owner/history');
           }}
         >
           <img

@@ -23,7 +23,7 @@ const Home = () => {
     if (isFilter) {
       setpayloadDummy(filterHouseBasedOnSearchInput(tempPayload));
     }
-    console.log(location);
+  
     if (location.state && stateUser.isLogin) {
       router.replace(location.state.pathname);
     }
