@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Styles from '../css/Aminities.module.css';
+import Styles from './Aminities.module.css';
 
 const Aminities = ({ stateAminities, handleAminities }) => {
   const [isChecked, setIsChecked] = useState({

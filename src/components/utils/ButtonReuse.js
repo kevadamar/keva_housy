@@ -4,7 +4,7 @@ const ButtonReuse = (props) => {
   const { variant, type, style, block, className, onClick, name } = props;
   return (
     <Button
-      className={className}
+      className={`${className} shadow-none`}
       name={name}
       variant={variant}
       type={type}

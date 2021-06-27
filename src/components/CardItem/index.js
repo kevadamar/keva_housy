@@ -1,17 +1,17 @@
-// import { useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Card, Badge } from 'react-bootstrap';
-import imgCard1 from '../assets/images/Screen Shot 2019-10-10 at 11.42 1.png';
-import Styles from '../css/Card.module.css';
+import imgCard1 from '../../assets/images/Screen Shot 2019-10-10 at 11.42 1.png';
+import Styles from './Card.module.css';
+import { formatNumberToIDR } from '../../helper';
 
 function CardItem({ item }) {
-  // const router = useHistory();
+  const router = useHistory();
 
-  // const handlePushToDetail = (id) => {
-  //   console.log(id);
-  //   router.push(`product/${id}`);
-  // };
+  const handlePushToDetail = (id) => {
+    router.push(`/product/${id}`);
+  };
   return (
-    <Card className={Styles.card}>
+    <Card className={Styles.card} onClick={() => handlePushToDetail(item.id)}>
       <span className={Styles.amenitiesContainer}>
         {item.amenities &&
           item.amenities.map(
@@ -20,7 +20,7 @@ function CardItem({ item }) {
                 <Badge key={index} variant="light" className="mt-2 p-2">
                   {amenities.name}
                 </Badge>
-              )
+              ),
           )}
       </span>
       <Card.Img
@@ -31,10 +31,10 @@ function CardItem({ item }) {
       />
       <Card.Body className={Styles.cardBody}>
         <Card.Title className="my-2">
-          {item.price} / {item.duration}
+          {formatNumberToIDR(item.price)} / {item.duration}
         </Card.Title>
         <Card.Text className={Styles.cardTextContent}>
-          {item.detailProperyRoom
+          {item.detailPropertyRoom
             .map((detail) => `${detail.qty} ${detail.name}`)
             .join(', ')}
         </Card.Text>

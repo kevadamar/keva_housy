@@ -1,9 +1,9 @@
 export const items = [
   {
     id: 1,
-    price: 'Rp. 9.000.000',
+    price: 9000000,
     duration: 'Year',
-    detailProperyRoom: [
+    detailPropertyRoom: [
       {
         name: 'Beds',
         qty: 2,
@@ -17,17 +17,17 @@ export const items = [
         qty: '1,800',
       },
     ],
-    address: 'Tangerang Selata, Pondok Aren',
-    amenities:[
+    address: 'Bogor Barat, Cijeruk',
+    amenities: [
       {
-        id:1,
+        id: 1,
         name: 'Furnished',
-        status: true
+        status: true,
       },
       {
-        id:2,
+        id: 2,
         name: 'Pet Allowed',
-        status: false
+        status: false,
       },
       {
         id: 3,
@@ -38,9 +38,9 @@ export const items = [
   },
   {
     id: 2,
-    price: 'Rp. 6.000.000',
+    price: 16000000,
     duration: 'Year',
-    detailProperyRoom: [
+    detailPropertyRoom: [
       {
         name: 'Beds',
         qty: 1,
@@ -54,17 +54,17 @@ export const items = [
         qty: '800',
       },
     ],
-    address: 'Tangerang Selata, Pondok Aren',
-    amenities:[
+    address: 'Bogor Kota, Tajur Halang',
+    amenities: [
       {
-        id:1,
+        id: 1,
         name: 'Furnished',
-        status: true
+        status: true,
       },
       {
-        id:2,
+        id: 2,
         name: 'Pet Allowed',
-        status: true
+        status: true,
       },
       {
         id: 3,
@@ -75,9 +75,9 @@ export const items = [
   },
   {
     id: 3,
-    price: 'Rp. 6.000.000',
+    price: 6000000,
     duration: 'Year',
-    detailProperyRoom: [
+    detailPropertyRoom: [
       {
         name: 'Beds',
         qty: 1,
@@ -91,17 +91,17 @@ export const items = [
         qty: '800',
       },
     ],
-    address: 'Tangerang Selata, Pondok Aren',
-    amenities:[
+    address: 'Jakarta Selatan, Kuningan',
+    amenities: [
       {
-        id:1,
+        id: 1,
         name: 'Furnished',
-        status: false
+        status: false,
       },
       {
-        id:2,
+        id: 2,
         name: 'Pet Allowed',
-        status: true
+        status: true,
       },
       {
         id: 3,
@@ -112,12 +112,12 @@ export const items = [
   },
   {
     id: 4,
-    price: 'Rp. 6.000.000',
-    duration: 'Year',
-    detailProperyRoom: [
+    price: 50000,
+    duration: 'Day',
+    detailPropertyRoom: [
       {
         name: 'Beds',
-        qty: 3,
+        qty: 1,
       },
       {
         name: 'Baths',
@@ -128,17 +128,17 @@ export const items = [
         qty: '800',
       },
     ],
-    address: 'Tangerang Selata, Pondok Aren',
-    amenities:[
+    address: 'Tangerang Selatan, Pondok Aren',
+    amenities: [
       {
-        id:1,
+        id: 1,
         name: 'Furnished',
-        status: true
+        status: true,
       },
       {
-        id:2,
+        id: 2,
         name: 'Pet Allowed',
-        status: true
+        status: true,
       },
       {
         id: 3,
@@ -149,9 +149,9 @@ export const items = [
   },
   {
     id: 5,
-    price: 'Rp. 6.000.000',
+    price: 6000000,
     duration: 'Year',
-    detailProperyRoom: [
+    detailPropertyRoom: [
       {
         name: 'Beds',
         qty: 3,
@@ -165,17 +165,17 @@ export const items = [
         qty: '800',
       },
     ],
-    address: 'Tangerang Selata, Pondok Aren',
-    amenities:[
+    address: 'Tangerang Selatan, Pondok Aren',
+    amenities: [
       {
-        id:1,
+        id: 1,
         name: 'Furnished',
-        status: true
+        status: true,
       },
       {
-        id:2,
+        id: 2,
         name: 'Pet Allowed',
-        status: true
+        status: true,
       },
       {
         id: 3,
@@ -186,12 +186,12 @@ export const items = [
   },
   {
     id: 6,
-    price: 'Rp. 61.000.000',
-    duration: 'Year',
-    detailProperyRoom: [
+    price: 61000,
+    duration: 'Day',
+    detailPropertyRoom: [
       {
         name: 'Beds',
-        qty: 1,
+        qty: 3,
       },
       {
         name: 'Baths',
@@ -202,17 +202,17 @@ export const items = [
         qty: '800',
       },
     ],
-    address: 'Tangerang Selata, Pondok Aren',
-    amenities:[
+    address: 'Tangerang Selatan, Pondok Aren',
+    amenities: [
       {
-        id:1,
+        id: 1,
         name: 'Furnished',
-        status: true
+        status: true,
       },
       {
-        id:2,
+        id: 2,
         name: 'Pet Allowed',
-        status: true
+        status: true,
       },
       {
         id: 3,
@@ -223,33 +223,33 @@ export const items = [
   },
   {
     id: 7,
-    price: 'Rp. 6.000.000',
+    price: 6000000,
     duration: 'Year',
-    detailProperyRoom: [
+    detailPropertyRoom: [
       {
         name: 'Beds',
-        qty: 1,
+        qty: 2,
       },
       {
         name: 'Baths',
-        qty: 1,
+        qty: 5,
       },
       {
         name: 'sqft',
         qty: '800',
       },
     ],
-    address: 'Tangerang Selata, Pondok Aren',
-    amenities:[
+    address: 'Tangerang Selatan, Pondok Aren',
+    amenities: [
       {
-        id:1,
+        id: 1,
         name: 'Furnished',
-        status: true
+        status: true,
       },
       {
-        id:2,
+        id: 2,
         name: 'Pet Allowed',
-        status: true
+        status: true,
       },
       {
         id: 3,
@@ -260,12 +260,12 @@ export const items = [
   },
   {
     id: 8,
-    price: 'Rp. 6.000.000',
-    duration: 'Year',
-    detailProperyRoom: [
+    price: 500000,
+    duration: 'Month',
+    detailPropertyRoom: [
       {
         name: 'Beds',
-        qty: 1,
+        qty: 2,
       },
       {
         name: 'Baths',
@@ -276,17 +276,17 @@ export const items = [
         qty: '800',
       },
     ],
-    address: 'Tangerang Selata, Pondok Aren',
-    amenities:[
+    address: 'Tangerang Selatan, Pondok Aren',
+    amenities: [
       {
-        id:1,
+        id: 1,
         name: 'Furnished',
-        status: true
+        status: true,
       },
       {
-        id:2,
+        id: 2,
         name: 'Pet Allowed',
-        status: true
+        status: true,
       },
       {
         id: 3,
@@ -297,33 +297,33 @@ export const items = [
   },
   {
     id: 9,
-    price: 'Rp. 61.000.000',
-    duration: 'Year',
-    detailProperyRoom: [
+    price: 610000,
+    duration: 'Month',
+    detailPropertyRoom: [
       {
         name: 'Beds',
-        qty: 1,
+        qty: 4,
       },
       {
         name: 'Baths',
-        qty: 1,
+        qty: 2,
       },
       {
         name: 'sqft',
         qty: '800',
       },
     ],
-    address: 'Tangerang Selata, Pondok Aren',
-    amenities:[
+    address: 'Tangerang Selatan, Pondok Aren',
+    amenities: [
       {
-        id:1,
+        id: 1,
         name: 'Furnished',
-        status: true
+        status: true,
       },
       {
-        id:2,
+        id: 2,
         name: 'Pet Allowed',
-        status: true
+        status: true,
       },
       {
         id: 3,
