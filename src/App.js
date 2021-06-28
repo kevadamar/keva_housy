@@ -9,7 +9,7 @@ import Profile from './pages/Profile';
 import PrivateRoute from './components/utils/PrivateRoute';
 import MyBooking from './pages/MyBooking';
 import { BookingContextProvider } from './contexts/BookingContext';
-// import MyHistory from './pages/MyHistory';
+import MyHistory from './pages/MyHistory';
 
 function App() {
   return (
@@ -22,7 +22,7 @@ function App() {
               <Route exact path="/" component={Home} />
               <PrivateRoute exact path="/profile" component={Profile} />
               <PrivateRoute exact path="/booking" component={MyBooking} />
-              {/* <PrivateRoute exact path="/history" component={MyHistory} /> */}
+              <PrivateRoute exact path="/history" component={MyHistory} />
               <Route exact path="/product/:id" component={DetailProduct} />
             </Switch>
           </BookingContextProvider>
