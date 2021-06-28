@@ -1,9 +1,17 @@
 import { createContext, useReducer } from 'react';
-import { ADD_NEW_USER, HIDE_ALERT, LOGIN, LOGOUT } from './action';
+import {
+  ADD_NEW_USER,
+  HIDE_ALERT,
+  HIDE_SIGN_IN,
+  LOGIN,
+  LOGOUT,
+  SHOW_SIGN_IN,
+} from './action';
 
 export const UserContext = createContext();
 
 const initialState = {
+  showModalLogin: false,
   isLogin: false,
   isSignUp: false,
   user: {
@@ -49,12 +57,12 @@ const handleSignUp = ({ currentState, payload }) => {
   if (checkUser) {
     newUser = currentState.tempUser;
     found = true;
-    console.log('exist')
+    console.log('exist');
   } else {
     newUser = currentState.tempUser;
     newUser = newUser.concat(payload);
     found = false;
-    console.log('new')
+    console.log('new');
   }
   console.log(newUser);
   return {
@@ -90,12 +98,22 @@ const userReducer = (state, action) => {
         isSignUp: false,
       };
     case ADD_NEW_USER:
-      console.log(handleSignUp({ currentState: state, payload }))
+      console.log(handleSignUp({ currentState: state, payload }));
       return handleSignUp({ currentState: state, payload });
     case HIDE_ALERT:
       return {
         ...state,
         isSignUp: false,
+      };
+    case SHOW_SIGN_IN:
+      return {
+        ...state,
+        showModalLogin: true,
+      };
+    case HIDE_SIGN_IN:
+      return {
+        ...state,
+        showModalLogin: false,
       };
     default:
       throw new Error('case unknown');

@@ -9,7 +9,12 @@ import userIconSvg from '../../assets/images/user-icon.svg';
 import { SearchContext } from '../../contexts/SearchContext';
 import { SEARCH_FILTER } from '../../contexts/SearchContext/action';
 import { UserContext } from '../../contexts/UserContext';
-import { ADD_NEW_USER, LOGIN, LOGOUT } from '../../contexts/UserContext/action';
+import {
+  ADD_NEW_USER,
+  HIDE_SIGN_IN,
+  LOGIN,
+  LOGOUT,
+} from '../../contexts/UserContext/action';
 
 import Styles from './Navbar.module.css';
 import {
@@ -61,21 +66,7 @@ const Header = () => {
       }));
     }
   };
-
-  // handle search
-  const handleSearch = (e) => {
-    const { value } = e.target;
-    dispatchSearch({ type: SEARCH_FILTER, searchText: value });
-    setSearch(value);
-  };
-
-  const handleModalShow = ({ name }) => {
-    setShow((currentState) => ({
-      ...currentState,
-      [name]: !currentState[name],
-    }));
-  };
-
+  
   const handleModalTo = ({ name }) => {
     if (name === 'signIn') {
       setShow((currentState) => ({
@@ -91,6 +82,21 @@ const Header = () => {
       }));
     }
   };
+
+  // handle search
+  const handleSearch = (e) => {
+    const { value } = e.target;
+    dispatchSearch({ type: SEARCH_FILTER, searchText: value });
+    setSearch(value);
+  };
+
+  const handleModalShow = ({ name }) => {
+    setShow((currentState) => ({
+      ...currentState,
+      [name]: !currentState[name],
+    }));
+  };
+
 
   const handleSubmit = () => {
     dispatchSearch({ type: SEARCH_FILTER, searchText: getSearch });
@@ -159,6 +165,7 @@ const Header = () => {
       </Link>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
+        
         <Form className="d-flex m-auto">
           {showSearch && (
             <InputGroup className={Styles.inputGroup}>
@@ -184,6 +191,7 @@ const Header = () => {
             </InputGroup>
           )}
         </Form>
+        
         {stateUser.isLogin ? (
           <>
             <img

@@ -3,15 +3,18 @@ import { Col, Row, Container } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import CardList from '../components/CardList';
 import Sidebar from '../components/Sidebar';
+import { BookingContext } from '../contexts/BookingContext';
 import { SearchContext } from '../contexts/SearchContext';
 import { UserContext } from '../contexts/UserContext';
 import { items as data } from '../data';
+
 const Home = () => {
   const router = useHistory();
   const { location } = router;
   const [payloadDummy, setpayloadDummy] = useState(null);
   const [tempPayload, setTempPayload] = useState(null);
 
+  
   const { state: stateUser } = useContext(UserContext);
   const { state: stateSearch } = useContext(SearchContext);
   const { isFilter, searchText } = stateSearch.searchFilter;
@@ -23,7 +26,7 @@ const Home = () => {
     if (isFilter) {
       setpayloadDummy(filterHouseBasedOnSearchInput(tempPayload));
     }
-  
+
     if (location.state && stateUser.isLogin) {
       router.replace(location.state.pathname);
     }

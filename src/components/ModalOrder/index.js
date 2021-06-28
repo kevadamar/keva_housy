@@ -26,9 +26,14 @@ const ModalOrder = ({ show, handleClose, handleSubmitBooking }) => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     handleSubmitBooking(payload);
+    setPayload({
+      checkIn: '',
+      checkOut: '',
+    });
   };
+
 
   const CustomDate = forwardRef(({ value, onClick }, ref) => {
     return (
@@ -53,7 +58,9 @@ const ModalOrder = ({ show, handleClose, handleSubmitBooking }) => {
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header className={Styles.modalHeader}>
-        <Modal.Title className="font-weight-bold">Sign up</Modal.Title>
+        <Modal.Title className="font-weight-bold">
+          How long you will stay
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body className={Styles2.modalBody}>
         <Form onSubmit={handleSubmit}>
@@ -89,7 +96,7 @@ const ModalOrder = ({ show, handleClose, handleSubmitBooking }) => {
               style={{ backgroundColor: '#5A57AB', color: ' white' }}
               type="submit"
               block
-              disabled={(!payload.checkIn || !payload.checkOut)}
+              disabled={!payload.checkIn || !payload.checkOut}
             >
               ORDER
             </ButtonReuse>

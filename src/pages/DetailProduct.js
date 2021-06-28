@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useContext } from 'react';
 import { Container } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import ImageWrapperDetail from '../components/ImageWrapperDetail';
 import ButtonReuse from '../components/utils/ButtonReuse';
 import { items as dataDummy } from '../data';
@@ -12,26 +12,126 @@ import bed1 from '../assets/images/bed 1.png';
 import bath1 from '../assets/images/bath 1.png';
 import ModalOrder from '../components/ModalOrder';
 
+import { BookingContext } from '../contexts/BookingContext';
+import { UserContext } from '../contexts/UserContext';
+import { ADD_NEW_USER, LOGIN, SHOW_SIGN_IN } from '../contexts/UserContext/action';
+import ModalSignin from '../components/ModalSignin';
+import ModalSignup from '../components/ModalSignup';
+import { getDataLocalStorage, removeDataLocalStorage, saveToLocalStorage } from '../helper';
+
 const DetailProduct = () => {
+  const router = useHistory();
+
   const { dispatch } = useContext(SearchContext);
+  const { state: bookingState, dispatch: dispatchBooking } =
+    useContext(BookingContext);
+  const { state: userState, dispatch: dispatchUser } = useContext(UserContext);
+
   const { id } = useParams();
   const [data, setData] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
+
+  //state handle modal box
+  const [show, setShow] = useState({
+    signIn: false,
+    signUp: false,
+    nameSignIn: 'signIn',
+    nameSignUp: 'signUp',
+  });
 
   const loadDataById = (id) => {
     return dataDummy.find((dummy) => dummy.id === parseInt(id));
   };
 
   const handleSubmitBooking = (payload) => {
-    payload = {...payload, checkIn: convertToDate(payload.checkIn),checkOut: convertToDate(payload.checkOut)}
-    console.log(payload);
-    setShowModal(false)
+    payload = {
+      ...payload,
+      checkIn: (payload.checkIn),
+      checkOut: (payload.checkOut),
+    };
+
+    setShowModal(false);
+
+    if (bookingState.booking === null) {
+      
+      
+      const newBooking = [
+        {bookId:1,houseName:'Astina', user: userState.user, durationDate: payload, house: data ,status: 1,orderedDate:new Date()},
+      ];
+      if(getDataLocalStorage({key:'booking'})) removeDataLocalStorage({key:'booking'})
+      saveToLocalStorage({key:'booking',payload:newBooking})
+      dispatchBooking({ type: 'ADD', payload: newBooking });
+    } else {
+      const genId = bookingState.booking[bookingState.booking.length - 1].bookId + 1
+      const newBooking = bookingState.booking;
+      console.log(newBooking);
+      newBooking.push({
+        bookId:genId,
+        houseName:'Astina',
+        user: userState.user,
+        durationDate: payload,
+        house: data,status: 1,orderedDate:new Date()
+      });
+      if(getDataLocalStorage({key:'booking'})) removeDataLocalStorage({key:'booking'})
+      saveToLocalStorage({key:'booking',payload:newBooking})
+      dispatchBooking({ type: 'ADD', payload: newBooking });
+    }
+
+    router.push('/booking');
   };
 
-  const convertToDate = ( dateTime ) => {
-    return new Date(dateTime).toISOString().split('T')[0].toString()
-  }
+  const handleShowModalOrder = () => {
+    if (!userState.isLogin) {
+      console.log(userState.isLogin)
+      handleModalShow({name:show.nameSignIn})
+    } else {
+      setShowModal(true);
+    }
+  };
+
+  const handleModalShow = ({ name }) => {
+    setShow((currentState) => ({
+      ...currentState,
+      [name]: !currentState[name],
+    }));
+  };
+
+  // handle submit login
+  const handleSubmitSignin = (payload) => {
+    dispatchUser({ type: LOGIN, payload });
+    saveToLocalStorage({ key: 'user', payload });
+    handleModalShow({name:show.nameSignIn})
+  };
+
+  // handle submit signup
+  const handleSubmitSignup = (payload) => {
+    dispatchUser({ type: ADD_NEW_USER, payload });
+    handleModalShow({name:show.nameSignUp})
+    if (!userState.isSignUp) {
+      setShow((currentState) => ({
+        ...currentState,
+        signIn: true,
+        signUp: false,
+      }));
+    }
+  };
+  
+  const handleModalTo = ({ name }) => {
+    if (name === 'signIn') {
+      setShow((currentState) => ({
+        ...currentState,
+        signIn: true,
+        signUp: false,
+      }));
+    } else {
+      setShow((currentState) => ({
+        ...currentState,
+        signIn: false,
+        signUp: true,
+      }));
+    }
+  };
 
   useEffect(() => {
     dispatch({ type: 'HIDE' });
@@ -98,7 +198,7 @@ const DetailProduct = () => {
               </span>
             </div>
             <p>{data.address}</p>
-            <h3 className="font-weight-bold mt-5">Description</h3>
+            <h3 className="font-weight-bold">Description</h3>
             <p>
               Lorem Ipsum is simply dummy text of the printing and typesetting
               industry. Lorem Ipsum has been the industry's standard dummy text
@@ -119,7 +219,7 @@ const DetailProduct = () => {
                   color: ' white',
                   padding: '.375rem 2.75rem',
                 }}
-                onClick={() => setShowModal(true)}
+                onClick={handleShowModalOrder}
               >
                 BOOK NOW
               </ButtonReuse>
@@ -130,6 +230,18 @@ const DetailProduct = () => {
             handleClose={() => setShowModal(false)}
             handleSubmitBooking={handleSubmitBooking}
           />
+          <ModalSignin
+          show={show.signIn}
+          handleClose={() => handleModalShow({ name: show.nameSignIn })}
+          handleTo={() => handleModalTo({ name: show.nameSignUp })}
+          handleSubmitLogin={handleSubmitSignin}
+        />
+        <ModalSignup
+          show={show.signUp}
+          handleClose={() => handleModalShow({ name: show.nameSignUp })}
+          handleTo={() => handleModalTo({ name: show.nameSignIn })}
+          handleSubmitSignup={handleSubmitSignup}
+        />
         </Container>
       )}
     </Container>
