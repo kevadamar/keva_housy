@@ -10,7 +10,11 @@ import ellipseEnd from '../../assets/images/ellipse-end.svg';
 import Styles from './CustomCard.module.css';
 import { useHistory } from 'react-router-dom';
 import { BookingContext } from '../../contexts/BookingContext';
-import { removeDataLocalStorage, saveToLocalStorage } from '../../helper';
+import {
+  getDataLocalStorage,
+  removeDataLocalStorage,
+  saveToLocalStorage,
+} from '../../helper';
 
 const CustomCardBox = ({ book, pushTo, type }) => {
   const router = useHistory();
@@ -67,9 +71,14 @@ const CustomCardBox = ({ book, pushTo, type }) => {
       return item;
     });
     console.log(result);
+    const resultHistory = getDataLocalStorage({ key: 'history' });
+
+    saveToLocalStorage({
+      key: 'history',
+      payload: !resultHistory ? result : resultHistory.concat(result),
+    });
     dispatch({ type: 'REMOVE' });
     removeDataLocalStorage({ key: 'booking' });
-    saveToLocalStorage({ key: 'history', payload: result });
   };
   return (
     <>
