@@ -10,6 +10,8 @@ import PrivateRoute from './components/utils/PrivateRoute';
 import MyBooking from './pages/MyBooking';
 import { BookingContextProvider } from './contexts/BookingContext';
 import MyHistory from './pages/MyHistory';
+import Owner from './pages/Owner';
+import AddProperty from './components/AddProperty';
 
 function App() {
   return (
@@ -24,6 +26,9 @@ function App() {
               <PrivateRoute exact path="/booking" component={MyBooking} />
               <PrivateRoute exact path="/history" component={MyHistory} />
               <Route exact path="/product/:id" component={DetailProduct} />
+              <PrivateRoute exact path="/owner" component={Owner} />
+              <PrivateRoute exact path="/owner/history" component={MyHistory} />
+              <PrivateRoute exact path="/owner/add" component={AddProperty} />
             </Switch>
           </BookingContextProvider>
         </SearchContextProvider>

@@ -14,10 +14,18 @@ import ModalOrder from '../components/ModalOrder';
 
 import { BookingContext } from '../contexts/BookingContext';
 import { UserContext } from '../contexts/UserContext';
-import { ADD_NEW_USER, LOGIN, SHOW_SIGN_IN } from '../contexts/UserContext/action';
+import {
+  ADD_NEW_USER,
+  LOGIN,
+  SHOW_SIGN_IN,
+} from '../contexts/UserContext/action';
 import ModalSignin from '../components/ModalSignin';
 import ModalSignup from '../components/ModalSignup';
-import { getDataLocalStorage, removeDataLocalStorage, saveToLocalStorage } from '../helper';
+import {
+  getDataLocalStorage,
+  removeDataLocalStorage,
+  saveToLocalStorage,
+} from '../helper';
 
 const DetailProduct = () => {
   const router = useHistory();
@@ -47,34 +55,49 @@ const DetailProduct = () => {
   const handleSubmitBooking = (payload) => {
     payload = {
       ...payload,
-      checkIn: (payload.checkIn),
-      checkOut: (payload.checkOut),
+      checkIn: payload.checkIn,
+      checkOut: payload.checkOut,
     };
 
     setShowModal(false);
 
-    if (bookingState.booking === null) {
-      
-      
+    const bookingLocal = getDataLocalStorage({ key: 'booking' });
+    const historyLocal = getDataLocalStorage({ key: 'history' });
+    if (!bookingLocal) {
+      const lastId = !historyLocal
+        ? 1
+        : historyLocal[historyLocal.length - 1].bookId + 1;
       const newBooking = [
-        {bookId:1,houseName:'Astina', user: userState.user, durationDate: payload, house: data ,status: 1,orderedDate:new Date()},
+        {
+          bookId: lastId,
+          houseName: 'Astina',
+          user: userState.user,
+          durationDate: payload,
+          house: data,
+          status: 1,
+          orderedDate: new Date(),
+        },
       ];
-      if(getDataLocalStorage({key:'booking'})) removeDataLocalStorage({key:'booking'})
-      saveToLocalStorage({key:'booking',payload:newBooking})
+      if (getDataLocalStorage({ key: 'booking' }))
+        removeDataLocalStorage({ key: 'booking' });
+      saveToLocalStorage({ key: 'booking', payload: newBooking });
       dispatchBooking({ type: 'ADD', payload: newBooking });
     } else {
-      const genId = bookingState.booking[bookingState.booking.length - 1].bookId + 1
-      const newBooking = bookingState.booking;
+      const genId = bookingLocal[bookingLocal.length - 1].bookId + 1;
+      const newBooking = bookingLocal;
       console.log(newBooking);
       newBooking.push({
-        bookId:genId,
-        houseName:'Astina',
+        bookId: genId,
+        houseName: 'Astina',
         user: userState.user,
         durationDate: payload,
-        house: data,status: 1,orderedDate:new Date()
+        house: data,
+        status: 1,
+        orderedDate: new Date(),
       });
-      if(getDataLocalStorage({key:'booking'})) removeDataLocalStorage({key:'booking'})
-      saveToLocalStorage({key:'booking',payload:newBooking})
+      if (getDataLocalStorage({ key: 'booking' }))
+        removeDataLocalStorage({ key: 'booking' });
+      saveToLocalStorage({ key: 'booking', payload: newBooking });
       dispatchBooking({ type: 'ADD', payload: newBooking });
     }
 
@@ -83,8 +106,8 @@ const DetailProduct = () => {
 
   const handleShowModalOrder = () => {
     if (!userState.isLogin) {
-      console.log(userState.isLogin)
-      handleModalShow({name:show.nameSignIn})
+      console.log(userState.isLogin);
+      handleModalShow({ name: show.nameSignIn });
     } else {
       setShowModal(true);
     }
@@ -101,13 +124,13 @@ const DetailProduct = () => {
   const handleSubmitSignin = (payload) => {
     dispatchUser({ type: LOGIN, payload });
     saveToLocalStorage({ key: 'user', payload });
-    handleModalShow({name:show.nameSignIn})
+    handleModalShow({ name: show.nameSignIn });
   };
 
   // handle submit signup
   const handleSubmitSignup = (payload) => {
     dispatchUser({ type: ADD_NEW_USER, payload });
-    handleModalShow({name:show.nameSignUp})
+    handleModalShow({ name: show.nameSignUp });
     if (!userState.isSignUp) {
       setShow((currentState) => ({
         ...currentState,
@@ -116,7 +139,7 @@ const DetailProduct = () => {
       }));
     }
   };
-  
+
   const handleModalTo = ({ name }) => {
     if (name === 'signIn') {
       setShow((currentState) => ({
@@ -231,17 +254,17 @@ const DetailProduct = () => {
             handleSubmitBooking={handleSubmitBooking}
           />
           <ModalSignin
-          show={show.signIn}
-          handleClose={() => handleModalShow({ name: show.nameSignIn })}
-          handleTo={() => handleModalTo({ name: show.nameSignUp })}
-          handleSubmitLogin={handleSubmitSignin}
-        />
-        <ModalSignup
-          show={show.signUp}
-          handleClose={() => handleModalShow({ name: show.nameSignUp })}
-          handleTo={() => handleModalTo({ name: show.nameSignIn })}
-          handleSubmitSignup={handleSubmitSignup}
-        />
+            show={show.signIn}
+            handleClose={() => handleModalShow({ name: show.nameSignIn })}
+            handleTo={() => handleModalTo({ name: show.nameSignUp })}
+            handleSubmitLogin={handleSubmitSignin}
+          />
+          <ModalSignup
+            show={show.signUp}
+            handleClose={() => handleModalShow({ name: show.nameSignUp })}
+            handleTo={() => handleModalTo({ name: show.nameSignIn })}
+            handleSubmitSignup={handleSubmitSignup}
+          />
         </Container>
       )}
     </Container>

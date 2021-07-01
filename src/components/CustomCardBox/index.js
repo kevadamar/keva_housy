@@ -10,6 +10,7 @@ import ellipseEnd from '../../assets/images/ellipse-end.svg';
 import Styles from './CustomCard.module.css';
 import { useHistory } from 'react-router-dom';
 import { BookingContext } from '../../contexts/BookingContext';
+import { UserContext } from '../../contexts/UserContext';
 import {
   getDataLocalStorage,
   removeDataLocalStorage,
@@ -20,6 +21,7 @@ const CustomCardBox = ({ book, pushTo, type }) => {
   const router = useHistory();
 
   const { state, dispatch } = useContext(BookingContext);
+  const { state: stateUser } = useContext(UserContext);
 
   const [show, setshow] = useState(false);
 
@@ -80,6 +82,31 @@ const CustomCardBox = ({ book, pushTo, type }) => {
     dispatch({ type: 'REMOVE' });
     removeDataLocalStorage({ key: 'booking' });
   };
+
+  const handleApprove = () => {
+    const result = getDataLocalStorage({ key: 'history' }).map((item) => {
+      if (item.bookId === book.bookId) {
+        item.status = 3;
+        return item;
+      }
+      return item;
+    });
+    saveToLocalStorage({ key: 'history', payload: result });
+    router.go(0);
+  };
+
+  const handleCancel = () => {
+    const result = getDataLocalStorage({ key: 'history' }).map((item) => {
+      if (item.bookId === book.bookId) {
+        item.status = 0;
+        return item;
+      }
+      return item;
+    });
+    saveToLocalStorage({ key: 'history', payload: result });
+    router.go(0);
+  };
+
   return (
     <>
       <Container style={{ border: '2px solid #dee2e6' }}>
@@ -208,7 +235,7 @@ const CustomCardBox = ({ book, pushTo, type }) => {
         </Table>
       </Container>
       <span className={Styles.button}>
-        {type === 'booking' && (
+        {type === 'booking' && stateUser.user.role !== 'owner' && (
           <ButtonReuse
             className="font-weight-bold"
             style={{
@@ -221,6 +248,24 @@ const CustomCardBox = ({ book, pushTo, type }) => {
           >
             PAY
           </ButtonReuse>
+        )}
+        {stateUser.user.role === 'owner' && book.status === 2 && (
+          <>
+            <ButtonReuse
+              className="font-weight-bold mr-4"
+              onClick={() => handleCancel()}
+              variant="danger"
+            >
+              CANCEL
+            </ButtonReuse>
+            <ButtonReuse
+              className="font-weight-bold"
+              onClick={() => handleApprove()}
+              variant="success"
+            >
+              APPROVE
+            </ButtonReuse>
+          </>
         )}
       </span>
       <Modal

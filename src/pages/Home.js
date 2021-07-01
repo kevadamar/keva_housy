@@ -1,9 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { Col, Row, Container } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import CardList from '../components/CardList';
 import Sidebar from '../components/Sidebar';
-import { BookingContext } from '../contexts/BookingContext';
 import { SearchContext } from '../contexts/SearchContext';
 import { UserContext } from '../contexts/UserContext';
 import { items as data } from '../data';
@@ -14,7 +13,6 @@ const Home = () => {
   const [payloadDummy, setpayloadDummy] = useState(null);
   const [tempPayload, setTempPayload] = useState(null);
 
-  
   const { state: stateUser } = useContext(UserContext);
   const { state: stateSearch } = useContext(SearchContext);
   const { isFilter, searchText } = stateSearch.searchFilter;
@@ -30,7 +28,7 @@ const Home = () => {
     if (location.state && stateUser.isLogin) {
       router.replace(location.state.pathname);
     }
-  }, [stateSearch]);
+  }, [stateSearch, stateUser.isLogin]);
 
   const filterHouseBasedOnSearchInput = (payload) => {
     const res = payload.filter((house) => {
@@ -46,22 +44,28 @@ const Home = () => {
 
   return (
     <Container fluid>
-      {payloadDummy && (
-        <Row>
-          <Col md={3} sm={12}>
-            <Sidebar handleFilter={handleFilter} />
-          </Col>
-          <Col
-            md={9}
-            sm={12}
-            style={{
-              backgroundColor: 'rgba(196, 196, 196, 0.25)',
-              padding: '20px 20px 0px 20px',
-            }}
-          >
-            <CardList data={payloadDummy} />
-          </Col>
-        </Row>
+      {stateUser.user.role === 'owner' ? (
+        <Redirect to='/owner' />
+      ) : (
+        <>
+          {payloadDummy && (
+            <Row>
+              <Col md={3} sm={12}>
+                <Sidebar handleFilter={handleFilter} />
+              </Col>
+              <Col
+                md={9}
+                sm={12}
+                style={{
+                  backgroundColor: 'rgba(196, 196, 196, 0.25)',
+                  padding: '20px 20px 0px 20px',
+                }}
+              >
+                <CardList data={payloadDummy} />
+              </Col>
+            </Row>
+          )}
+        </>
       )}
     </Container>
   );
