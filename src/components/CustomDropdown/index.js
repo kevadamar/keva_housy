@@ -11,7 +11,7 @@ import { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext';
 
 const CustomDropdown = ({ handleLogout }) => {
-    const {state:stateUser} = useContext(UserContext)
+  const { state: stateUser } = useContext(UserContext);
   const router = useHistory();
 
   const handleLogoutClick = () => {
@@ -19,6 +19,7 @@ const CustomDropdown = ({ handleLogout }) => {
     handleLogout();
   };
 
+  //dropdown user
   const DropdownUser = () => {
     return (
       <>
@@ -70,6 +71,7 @@ const CustomDropdown = ({ handleLogout }) => {
     );
   };
 
+  //dropdown owner
   const DropdownOwner = () => {
     return (
       <>
@@ -127,7 +129,11 @@ const CustomDropdown = ({ handleLogout }) => {
         <span className={Styles.caretDown}></span>
         <span className={Styles.caretDown2}></span>
 
-       {stateUser.user.role === 'tenant' ? <DropdownUser/> : <DropdownOwner/>}
+        {stateUser.user.role === 'tenant' ? (
+          <DropdownUser />
+        ) : (
+          <DropdownOwner />
+        )}
 
         <p className={Styles.divider}></p>
         <div className={Styles.dropdownMenu} onClick={handleLogoutClick}>
