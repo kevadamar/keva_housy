@@ -4,18 +4,15 @@ import ModalChangePassword from '../ModalChangePassword';
 
 const Biodata = ({ user }) => {
   const [showModal, setShowModal] = useState(false);
-
-  const handleChangedPassword = (payload) => {
-    console.log(payload);
-  };
+  
   return (
     <>
       <h3>Personal Info</h3>
-      {/* // name */}
+
       <Container fluid className="px-0 d-flex align-items-center py-2">
         <span className="pr-3">
           <i
-            style={{color:'grey', fontSize: '2.5em' }}
+            style={{ color: 'grey', fontSize: '2.5em' }}
             className="fa fa-user-circle"
             aria-hidden="true"
           ></i>
@@ -25,11 +22,11 @@ const Biodata = ({ user }) => {
           <p className="text-secondary mb-0">Full name</p>
         </span>
       </Container>
-      {/* // name */}
+
       <Container fluid className="px-0 d-flex align-items-center py-2">
         <span className="pr-3">
           <i
-            style={{color:'grey', fontSize: '2.5em' }}
+            style={{ color: 'grey', fontSize: '2.5em' }}
             className="fa fa-envelope"
             aria-hidden="true"
           ></i>
@@ -39,11 +36,11 @@ const Biodata = ({ user }) => {
           <p className="text-secondary mb-0">Email</p>
         </span>
       </Container>
-      {/* // name */}
+
       <Container fluid className="px-0 d-flex align-items-center py-2">
         <span className="pr-3">
           <i
-            style={{color:'grey', fontSize: '3.5em' }}
+            style={{ color: 'grey', fontSize: '3.5em' }}
             className="fa fa-lock"
             aria-hidden="true"
           ></i>
@@ -51,7 +48,7 @@ const Biodata = ({ user }) => {
         <span className="d-flex flex-column">
           <h5
             className="mb-0 text-primary"
-            style={{color:'grey', cursor: 'pointer' }}
+            style={{ color: 'grey', cursor: 'pointer' }}
             onClick={() => setShowModal(true)}
           >
             Change Password
@@ -59,25 +56,25 @@ const Biodata = ({ user }) => {
           <p className="text-secondary mb-0">Password</p>
         </span>
       </Container>
-      {/* // name */}
+
       <Container fluid className="px-0 d-flex align-items-center py-2">
         <span className="pr-3">
           <i
-            style={{color:'grey', fontSize: '2.5em' }}
+            style={{ color: 'grey', fontSize: '2.5em' }}
             className="fa fa-certificate"
             aria-hidden="true"
           ></i>
         </span>
         <span className="d-flex flex-column">
-          <h5 className="mb-0">{user.role}</h5>
+          <h5 className="mb-0">{user.listAs.name}</h5>
           <p className="text-secondary mb-0">Status</p>
         </span>
       </Container>
-      {/* // name */}
+
       <Container fluid className="px-0 d-flex align-items-center py-2">
         <span className="pr-3">
           <i
-            style={{color:'grey', fontSize: '2.5em' }}
+            style={{ color: 'grey', fontSize: '2.5em' }}
             className="fa fa-transgender"
             aria-hidden="true"
           ></i>
@@ -89,25 +86,25 @@ const Biodata = ({ user }) => {
           <p className="text-secondary mb-0">Gender</p>
         </span>
       </Container>
-      {/* // name */}
+
       <Container fluid className="px-0 d-flex align-items-center py-2">
         <span className="pr-3">
           <i
-            style={{color:'grey', fontSize: '2.5em' }}
+            style={{ color: 'grey', fontSize: '2.5em' }}
             className="fa fa-phone"
             aria-hidden="true"
           ></i>
         </span>
         <span className="d-flex flex-column">
-          <h5 className="mb-0">{user.phoneNumber}</h5>
+          <h5 className="mb-0">+62{user.phone_number}</h5>
           <p className="text-secondary mb-0">Mobile Phone</p>
         </span>
       </Container>
-      {/* // name */}
+
       <Container fluid className="px-0 d-flex align-items-center py-2">
         <span className="pr-3">
           <i
-            style={{color:'grey', fontSize: '3em' }}
+            style={{ color: 'grey', fontSize: '3em' }}
             className="fa fa-map-marker"
             aria-hidden="true"
           ></i>
@@ -122,7 +119,6 @@ const Biodata = ({ user }) => {
         <ModalChangePassword
           show={showModal}
           handleClose={() => setShowModal(false)}
-          handleChangedPassword={handleChangedPassword}
         />
       )}
     </>

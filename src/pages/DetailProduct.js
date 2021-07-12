@@ -3,40 +3,31 @@ import { useState } from 'react';
 import { useContext } from 'react';
 import { Container } from 'react-bootstrap';
 import { useHistory, useParams } from 'react-router-dom';
+import { useMutation, useQuery } from 'react-query';
+
 import ImageWrapperDetail from '../components/ImageWrapperDetail';
 import ButtonReuse from '../components/utils/ButtonReuse';
-import { items as dataDummy } from '../data';
 import { SearchContext } from '../contexts/SearchContext';
 
 import bed1 from '../assets/images/bed 1.png';
 import bath1 from '../assets/images/bath 1.png';
 import ModalOrder from '../components/ModalOrder';
 
-import { BookingContext } from '../contexts/BookingContext';
 import { UserContext } from '../contexts/UserContext';
-import {
-  ADD_NEW_USER,
-  LOGIN,
-  SHOW_SIGN_IN,
-} from '../contexts/UserContext/action';
+import { ADD_NEW_USER, LOGIN } from '../contexts/UserContext/action';
 import ModalSignin from '../components/ModalSignin';
 import ModalSignup from '../components/ModalSignup';
-import {
-  getDataLocalStorage,
-  removeDataLocalStorage,
-  saveToLocalStorage,
-} from '../helper';
+import { changeFormatDate, formatNumberToIDR, saveToLocalStorage } from '../helper';
+import { API } from '../config';
+import Loader from '../components/utils/Loader';
 
 const DetailProduct = () => {
   const router = useHistory();
 
   const { dispatch } = useContext(SearchContext);
-  const { state: bookingState, dispatch: dispatchBooking } =
-    useContext(BookingContext);
   const { state: userState, dispatch: dispatchUser } = useContext(UserContext);
 
   const { id } = useParams();
-  const [data, setData] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -48,65 +39,78 @@ const DetailProduct = () => {
     nameSignUp: 'signUp',
   });
 
-  const loadDataById = (id) => {
-    return dataDummy.find((dummy) => dummy.id === parseInt(id));
+  const loadDataById = async (id) => {
+    try {
+      const newid = parseInt(id);
+      const response = await API.get(`house/${newid}`);
+
+      if (response.status !== 200) {
+        throw new Error('An error has occured');
+      }
+      return response.data.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   };
+
+  const postDataBooking = async (payload) => {
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const response = await API.post('booking', payload, config);
+
+      if (response.status !== 201) {
+        throw new Error('An error has occured');
+      }
+      return response.data.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
+
+  const { isLoading, data, isError, isSuccess } = useQuery(
+    `detail-house-${id}`,
+    async () => await loadDataById(id),
+  );
+
+  const mutation = useMutation(postDataBooking, {
+    onSuccess: () => {
+      console.log('success');
+      setShowModal(false);
+      router.push('/booking');
+    },
+    onError: (error) => {
+      console.log('error', error);
+    },
+  });
+
+  useEffect(() => {
+    dispatch({ type: 'HIDE' });
+    return () => {
+      dispatch({ type: 'SHOW' });
+    };
+  }, []);
 
   const handleSubmitBooking = (payload) => {
     payload = {
       ...payload,
-      checkIn: payload.checkIn,
-      checkOut: payload.checkOut,
+      checkin: changeFormatDate(payload.checkin),
+      checkout: changeFormatDate(payload.checkout),
+      house_id: data.id,
+      total: data.price,
+      status: 1,
     };
 
-    setShowModal(false);
-
-    const bookingLocal = getDataLocalStorage({ key: 'booking' });
-    const historyLocal = getDataLocalStorage({ key: 'history' });
-    if (!bookingLocal) {
-      const lastId = !historyLocal
-        ? 1
-        : historyLocal[historyLocal.length - 1].bookId + 1;
-      const newBooking = [
-        {
-          bookId: lastId,
-          houseName: 'Astina',
-          user: userState.user,
-          durationDate: payload,
-          house: data,
-          status: 1,
-          orderedDate: new Date(),
-        },
-      ];
-      if (getDataLocalStorage({ key: 'booking' }))
-        removeDataLocalStorage({ key: 'booking' });
-      saveToLocalStorage({ key: 'booking', payload: newBooking });
-      dispatchBooking({ type: 'ADD', payload: newBooking });
-    } else {
-      const genId = bookingLocal[bookingLocal.length - 1].bookId + 1;
-      const newBooking = bookingLocal;
-      console.log(newBooking);
-      newBooking.push({
-        bookId: genId,
-        houseName: 'Astina',
-        user: userState.user,
-        durationDate: payload,
-        house: data,
-        status: 1,
-        orderedDate: new Date(),
-      });
-      if (getDataLocalStorage({ key: 'booking' }))
-        removeDataLocalStorage({ key: 'booking' });
-      saveToLocalStorage({ key: 'booking', payload: newBooking });
-      dispatchBooking({ type: 'ADD', payload: newBooking });
-    }
-
-    router.push('/booking');
+    // setShowModal(false);
+    mutation.mutate(payload);
   };
 
   const handleShowModalOrder = () => {
     if (!userState.isLogin) {
-      console.log(userState.isLogin);
       handleModalShow({ name: show.nameSignIn });
     } else {
       setShowModal(true);
@@ -156,14 +160,6 @@ const DetailProduct = () => {
     }
   };
 
-  useEffect(() => {
-    dispatch({ type: 'HIDE' });
-    setData(loadDataById(id));
-    return () => {
-      dispatch({ type: 'SHOW' });
-    };
-  }, []);
-
   const DetailPropertyRoom = ({ name, qty }) => {
     if (name.toLowerCase() === 'beds') {
       return (
@@ -198,42 +194,44 @@ const DetailProduct = () => {
   };
 
   return (
-    <Container fluid className="bg-identity">
-      {data && (
+    <Container
+      fluid
+      className="bg-identity"
+      style={{ height: isLoading ? '100vh' : 'auto' }}
+    >
+      {isLoading && <Loader />}
+      {isError && <h2>There was an error processing your request....</h2>}
+      {isSuccess && (
         <Container className="py-4">
-          <ImageWrapperDetail />
+          <ImageWrapperDetail
+            image={{
+              image: data.image,
+              imageFirst: data.imageFirst,
+              imageSecond: data.imageSecond,
+              imageThird: data.imageThird,
+            }}
+          />
           <Container className="px-5">
-            <h2 className="font-weight-bold">Astina</h2>
+            <h2 className="font-weight-bold">{data.name}</h2>
             <div className="d-flex justify-content-between mt-4">
               <h3 className="font-weight-bold">
-                {data.price} / {data.duration}
+                Rp.{formatNumberToIDR(data.price)} / {data.typeRent}
               </h3>
               <span className="d-flex">
-                {data.detailPropertyRoom.map((item, index) => {
-                  return (
-                    <>
-                      <div className="ml-3" key={index}>
-                        <DetailPropertyRoom name={item.name} qty={item.qty} />
-                      </div>
-                    </>
-                  );
-                })}
+                <div className="ml-3">
+                  <DetailPropertyRoom name="beds" qty={data.bedroom} />
+                </div>
+                <div className="ml-3">
+                  <DetailPropertyRoom name="baths" qty={data.bathroom} />
+                </div>
+                <div className="ml-3">
+                  <DetailPropertyRoom name="area" qty={data.area} />
+                </div>
               </span>
             </div>
             <p>{data.address}</p>
             <h3 className="font-weight-bold">Description</h3>
-            <p>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s, when an unknown printer took a galley of
-              type and scrambled it to make a type specimen book. It has
-              survived not only five centuries, but also the leap into
-              electronic typesetting, remaining essentially unchanged. It was
-              popularised in the 1960s with the release of Letraset sheets
-              containing Lorem Ipsum passages, and more recently with desktop
-              publishing software like Aldus PageMaker including versions of
-              Lorem Ipsum.
-            </p>
+            <p>{data.description}</p>
             <span className="d-flex justify-content-end">
               <ButtonReuse
                 className="font-weight-bold my-2"
@@ -248,23 +246,29 @@ const DetailProduct = () => {
               </ButtonReuse>
             </span>
           </Container>
-          <ModalOrder
-            show={showModal}
-            handleClose={() => setShowModal(false)}
-            handleSubmitBooking={handleSubmitBooking}
-          />
-          <ModalSignin
-            show={show.signIn}
-            handleClose={() => handleModalShow({ name: show.nameSignIn })}
-            handleTo={() => handleModalTo({ name: show.nameSignUp })}
-            handleSubmitLogin={handleSubmitSignin}
-          />
-          <ModalSignup
-            show={show.signUp}
-            handleClose={() => handleModalShow({ name: show.nameSignUp })}
-            handleTo={() => handleModalTo({ name: show.nameSignIn })}
-            handleSubmitSignup={handleSubmitSignup}
-          />
+          {showModal && (
+            <ModalOrder
+              show={showModal}
+              handleClose={() => setShowModal(false)}
+              handleSubmitBooking={handleSubmitBooking}
+            />
+          )}
+          {show.signIn && (
+            <ModalSignin
+              show={show.signIn}
+              handleClose={() => handleModalShow({ name: show.nameSignIn })}
+              handleTo={() => handleModalTo({ name: show.nameSignUp })}
+              handleSubmitLogin={handleSubmitSignin}
+            />
+          )}
+          {show.signUp && (
+            <ModalSignup
+              show={show.signUp}
+              handleClose={() => handleModalShow({ name: show.nameSignUp })}
+              handleTo={() => handleModalTo({ name: show.nameSignIn })}
+              handleSubmitSignup={handleSubmitSignup}
+            />
+          )}
         </Container>
       )}
     </Container>

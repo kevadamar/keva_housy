@@ -1,6 +1,9 @@
 import { Alert } from 'bootstrap';
 import { useContext, useState } from 'react';
 import { Modal, Form, InputGroup, Container } from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
+import { useMutation, useQuery } from 'react-query';
+import { API } from '../../config';
 import { UserContext } from '../../contexts/UserContext';
 import { HIDE_ALERT } from '../../contexts/UserContext/action';
 import Styles from '../../css/CustomModalBox.module.css';
@@ -8,26 +11,67 @@ import ButtonReuse from '../utils/ButtonReuse';
 
 const ModalSignup = ({ show, handleClose, handleTo, handleSubmitSignup }) => {
   const { state: stateUser, dispatch: dispatchUser } = useContext(UserContext);
-  const [payload, setPayload] = useState({
-    fullname: '',
-    username: '',
-    email: '',
-    password: '',
-    phoneNumber: '',
-    gender: '',
-    address: '',
-    role: '',
-  });
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleChange = (e) => {
-    setPayload((currenState) => ({
-      ...currenState,
-      [e.target.name]: e.target.value,
-    }));
+  const handleSingup = async (data) => {
+    const config = {
+      'Content-Type': 'application/json',
+    };
+    try {
+      const response = await API.post('signup', data, config);
+
+      if (response.status !== 200) {
+        throw new Error('An error has occured');
+      }
+      console.log(`response.data`, response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Internal Server Error!');
+    }
   };
 
-  const handleSubmit = () => {
-    handleSubmitSignup(payload);
+  const mutation = useMutation(handleSingup, {
+    onSuccess: async ({ data }) => {
+      console.log(`data`, data);
+      handleSubmitSignup({ isSignUp: false });
+    },
+    onError: async () => {
+      console.log('error');
+      handleSubmitSignup({ isSignUp: true });
+    },
+  });
+
+  const onSubmit = (payload) => {
+    // console.log(`payload`, payload);
+    mutation.mutate(payload);
+  };
+
+  const loadData = async () => {
+    try {
+      const response = await API.get('roles');
+
+      if (response.status !== 200) {
+        throw new Error('An error has occured');
+      }
+      return response.data.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
+
+  const { data, error, isSuccess } = useQuery('roles', loadData, {
+    retry: false,
+  });
+
+  const {
+    formState: { errors, isSubmitting },
+    register,
+    handleSubmit,
+  } = useForm();
+
+  const ErrMsg = ({ msg }) => {
+    return <span style={{ color: 'red' }}>{msg}</span>;
   };
 
   return (
@@ -36,53 +80,82 @@ const ModalSignup = ({ show, handleClose, handleTo, handleSubmitSignup }) => {
         <Modal.Title className="font-weight-bold">Sign up</Modal.Title>
       </Modal.Header>
       <Modal.Body className={Styles.modalBody} style={{ height: '80vh' }}>
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={(e) => e.preventDefault()}>
           <Form.Group>
             <Form.Label className="font-weight-bold">Full Name</Form.Label>
             <Form.Control
               className="bg-identity font-weight-bold"
-              required
-              name="fullname"
               type="text"
-              value={payload.fullname}
-              onChange={handleChange}
+              {...register('fullname', { required: 'Fullname is required' })}
             />
+
+            {errors.fullname && <ErrMsg msg={errors.fullname.message} />}
           </Form.Group>
 
           <Form.Group>
             <Form.Label className="font-weight-bold">Username</Form.Label>
             <Form.Control
               className="bg-identity font-weight-bold"
-              required
-              name="username"
               type="text"
-              value={payload.username}
-              onChange={handleChange}
+              {...register('username', { required: 'Username is required' })}
             />
+            {errors.username && <ErrMsg msg={errors.username.message} />}
           </Form.Group>
 
           <Form.Group controlId="formBasicEmail">
             <Form.Label className="font-weight-bold">Email</Form.Label>
             <Form.Control
               className="bg-identity font-weight-bold"
-              required
-              name="email"
               type="email"
-              value={payload.email}
-              onChange={handleChange}
+              {...register('email', {
+                required: 'Email is required',
+                pattern:
+                  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+              })}
             />
+            {errors.email && errors.email.type === 'required' && (
+              <ErrMsg msg={errors.email.message} />
+            )}
+            {errors.email && errors.email.type === 'pattern' && (
+              <ErrMsg msg="Invalid Email" />
+            )}
           </Form.Group>
 
-          <Form.Group>
+          <Form.Group className={Styles.inputGroup}>
             <Form.Label className="font-weight-bold">Password</Form.Label>
             <Form.Control
               className="bg-identity font-weight-bold"
-              required
-              name="password"
-              type="password"
-              value={payload.password}
-              onChange={handleChange}
+              type={`${showPassword ? 'text' : 'password'}`}
+              {...register('password', {
+                required: 'Password is Required',
+                minLength: 8,
+              })}
             />
+            <span
+              className={`${Styles.iconPassword} ${
+                errors.password
+                  ? `${Styles.iconPasswordError}`
+                  : `${Styles.iconPasswordDefault}`
+              }`}
+              tabIndex="0"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowPassword((currentState) => !currentState);
+                console.log(showPassword);
+              }}
+            >
+              <i
+                className={`fa ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}
+                aria-hidden="true"
+              ></i>
+            </span>
+            {errors.password && errors.password.type === 'required' && (
+              <ErrMsg msg={errors.password.message} />
+            )}
+            {errors.password && errors.password.type === 'minLength' && (
+              <ErrMsg msg="Min 8 Characters" />
+            )}
           </Form.Group>
 
           <Form.Group className={Styles.inputGroup}>
@@ -90,16 +163,18 @@ const ModalSignup = ({ show, handleClose, handleTo, handleSubmitSignup }) => {
             <Form.Control
               as="select"
               className={`${Styles.select} bg-identity font-weight-bold`}
-              required
-              name="role"
-              value={payload.role}
-              onChange={handleChange}
+              {...register('role_id', { required: 'List As is required' })}
             >
-              <option>Select</option>
-              <option value="tenant">Tenant</option>
-              <option value="owner">Owner</option>
+              <option value=''>Select</option>
+              {isSuccess &&
+                data.map((role) => (
+                  <option key={role.id} value={role.id}>
+                    {role.name}
+                  </option>
+                ))}
             </Form.Control>
             <span className={Styles.caretDown}></span>
+            {errors.role_id && <ErrMsg msg={errors.role_id.message} />}
           </Form.Group>
 
           <Form.Group className={Styles.inputGroup}>
@@ -107,16 +182,14 @@ const ModalSignup = ({ show, handleClose, handleTo, handleSubmitSignup }) => {
             <Form.Control
               as="select"
               className={`${Styles.select} bg-identity font-weight-bold`}
-              required
-              name="gender"
-              value={payload.gender}
-              onChange={handleChange}
+              {...register('gender', { required: 'Gender is required' })}
             >
-              <option>Select</option>
-              <option value="L">Laki-Laki</option>
-              <option value="P">Perempuan</option>
+              <option value=''>Select</option>
+              <option value="male">Laki-Laki</option>
+              <option value="female">Perempuan</option>
             </Form.Control>
             <span className={Styles.caretDown}></span>
+            {errors.gender && <ErrMsg msg={errors.gender.message} />}
           </Form.Group>
 
           <Form.Group>
@@ -127,13 +200,15 @@ const ModalSignup = ({ show, handleClose, handleTo, handleSubmitSignup }) => {
               </InputGroup.Prepend>
               <Form.Control
                 className="bg-identity font-weight-bold"
-                required
-                name="phoneNumber"
                 type="number"
-                value={payload.phoneNumber}
-                onChange={handleChange}
+                {...register('phone_number', {
+                  required: 'Phone Number is required',
+                })}
               />
             </InputGroup>
+            {errors.phone_number && (
+              <ErrMsg msg={errors.phone_number.message} />
+            )}
           </Form.Group>
 
           <Form.Group>
@@ -141,19 +216,18 @@ const ModalSignup = ({ show, handleClose, handleTo, handleSubmitSignup }) => {
             <Form.Control
               as="textarea"
               className="bg-identity font-weight-bold"
-              required
-              name="address"
-              value={payload.address}
-              onChange={handleChange}
+              {...register('address', { required: 'Address is required' })}
             />
+            {errors.address && <ErrMsg msg={errors.address.message} />}
           </Form.Group>
 
           <Container fluid className="px-0 pt-1">
             <ButtonReuse
               className="font-weight-bold my-2"
               style={{ backgroundColor: '#5A57AB', color: ' white' }}
-              type="submit"
               block
+              onClick={handleSubmit(onSubmit)}
+              disabled={isSubmitting}
             >
               Sign Up
             </ButtonReuse>

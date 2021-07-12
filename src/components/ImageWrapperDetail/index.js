@@ -1,23 +1,36 @@
 import Styles from './ImageWrapperDetail.module.css';
 
-import imgDum1 from '../../assets/images/imgdetail.png';
-import imgDum2 from '../../assets/images/imgdetail2.png';
-
-const ImageWrapperDetail = () => {
+const ImageWrapperDetail = ({ image }) => {
   return (
     <div className={Styles.wrapperContainer}>
       <span className={Styles.imageWrapper}>
         <span className={Styles.firstImageWrapper}>
-          <img className={Styles.firstImage} src={imgDum1} alt="dim" />
+          <img
+            style={{ width: '100%', objectFit: 'cover' }}
+            src={image.image}
+            alt="one"
+          />
         </span>
-        <span className={Styles.secondImageWrapper}>
-          <img src={imgDum2} alt="dim" />
+        <span className={`d-flex justify-content-center align-items-center`}>
+          <img
+            className={Styles.fitImage}
+            src={!image.imageFirst ? image.image : image.imageFirst}
+            alt="two"
+          />
         </span>
         <span className={Styles.thirdImageWrapper}>
-          <img src={imgDum2} alt="dim" />
+          <img
+            className={Styles.fitImage}
+            src={!image.imageSecond ? image.image : image.imageSecond}
+            alt="three"
+          />
         </span>
         <span className={Styles.fourthImageWrapper}>
-          <img src={imgDum2} alt="dim" />
+          <img
+            className={Styles.fitImage}
+            src={!image.imageThird ? image.image : image.imageThird}
+            alt="four"
+          />
         </span>
       </span>
     </div>

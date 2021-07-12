@@ -9,7 +9,7 @@ const CustomRadioButton = ({ title, name, arrData, handleSelected }) => {
 
     if (name) {
       const newValue = parseInt(value);
-      handleSelected({ name, qty: newValue });
+      handleSelected({ title, qty: newValue });
       setIsSelected(newValue);
     } else {
       handleSelected(value);

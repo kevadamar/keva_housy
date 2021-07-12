@@ -1,6 +1,6 @@
 import { Col, Row } from 'react-bootstrap';
 import CardItem from '../CardItem';
-import NotFoundFilter from '.';
+import NotFoundFilter from '../utils/NotFoundFilter';
 
 const CardList = ({data}) => {
   return (

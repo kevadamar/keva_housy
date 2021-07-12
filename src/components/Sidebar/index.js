@@ -1,167 +1,76 @@
 import { useState } from 'react';
-import Aminities from '../Amenities';
+import Amenities from '../Amenities';
 import InputDate from '../InputDate';
-import { items as data } from '../../data';
-import { formatNumberToIDR, formatPriceStringToInt } from '../../helper';
 import CustomRadioButton from '../CustomRadioButton';
 
 const Sidebar = ({ handleFilter }) => {
   const [payload, setPayload] = useState({
-    duration: '',
+    typeRent: '',
     date: new Date(),
-    aminities: [
-      {
-        id: 1,
-        name: 'Furnished',
-        status: false,
-      },
-      {
-        id: 2,
-        name: 'Pet Allowed',
-        status: false,
-      },
-      {
-        id: 3,
-        name: 'Shared Accomodation',
-        status: false,
-      },
-    ],
-    detailPropertyRoom: [
-      {
-        name: 'Beds',
-        qty: 0,
-      },
-      {
-        name: 'Baths',
-        qty: 0,
-      },
-      {
-        name: 'sqft',
-        qty: '800',
-      },
-    ],
+    amenities: '',
+    bedroom: '',
+    bathroom: '',
     price: '0',
   });
 
-  const aminitiesArr = [1, 2, 3, 4, 5];
+  const amenitiesArr = [
+    {
+      id: 1,
+      name: 'Furnished',
+      status: false,
+    },
+    {
+      id: 2,
+      name: 'Pet Allowed',
+      status: false,
+    },
+    {
+      id: 3,
+      name: 'Shared Accomodation',
+      status: false,
+    },
+  ];
+
+  const propertyArr = [1, 2, 3, 4, 5];
 
   const typeOfRentArr = ['Day', 'Month', 'Year'];
 
   const handleTypeOfRent = (value) => {
-    setPayload((currentState) => ({ ...currentState, duration: value }));
+    setPayload((currentState) => ({ ...currentState, typeRent: value }));
   };
 
   const handleInputDate = (date) => {
     setPayload((currentState) => ({ ...currentState, date }));
   };
 
-  const handleAminities = (value) => {
-    const { aminities } = payload;
-    const updateaminities = aminities.map((item) => {
-      if (item.id === value.id) {
-        console.log(value);
-        return { ...item, status: value.status };
-      }
-      return { ...item };
-    });
+  const handleAmenities = (value) => {
     setPayload((currentState) => ({
       ...currentState,
-      aminities: updateaminities,
+      amenities: value.join(','),
     }));
   };
 
   const handlePropertyRoom = (value) => {
-    const { detailPropertyRoom } = payload;
-    const updatePropertyRoom = detailPropertyRoom.map((item) => {
-      if (item.name === value.name) {
-        return { ...item, qty: value.qty };
-      }
-      return { ...item };
-    });
+    // const { detailPropertyRoom } = payload;
+
+    const { title, qty } = value;
+
     setPayload((currentState) => ({
       ...currentState,
-      detailPropertyRoom: updatePropertyRoom,
+      [title.toLowerCase()]: qty,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // filter by price,duration,aminities,detail property,
-    const resultsByDuration = data.filter((item) => {
-      if (!payload.duration) {
-        return true;
-      }
-      if (item.duration === payload.duration) {
-        return true;
-      }
-      return false;
+    handleFilter({
+      ...payload,
+      price: parseInt(payload.price) > 0 ? payload.price : '',
     });
-
-    // filter by price
-    const resultsByPrice = (resultsByDuration) =>
-      resultsByDuration.filter((item) => {
-        if (formatNumberToIDR(payload.price) <= 0) {
-          return true;
-        }
-        if (item.price <= formatPriceStringToInt(payload.price)) {
-          return true;
-        }
-        return false;
-      });
-
-    /// filter by property
-    const resultsByProperty = (resultsByPrice) => {
-      return resultsByPrice.filter((item) => {
-        if (
-          payload.detailPropertyRoom[0].qty === 0 &&
-          payload.detailPropertyRoom[1].qty === 0
-        ) {
-          return true;
-        }
-
-        if (
-          item.detailPropertyRoom[0].qty ===
-            payload.detailPropertyRoom[0].qty ||
-          item.detailPropertyRoom[1].qty === payload.detailPropertyRoom[1].qty
-        ) {
-          return true;
-        }
-        return false;
-      });
-    };
-
-    //filter by aminities
-    const resultsByAminities = (resultsByProperty) => {
-      return resultsByProperty.filter((item) => {
-        if (
-          !payload.aminities[0].status &&
-          !payload.aminities[1].status &&
-          !payload.aminities[2].status
-        ) {
-          return true;
-        }
-
-        if (
-          item.amenities[0].status === payload.aminities[0].status ||
-          item.amenities[1].status === payload.aminities[1].status ||
-          item.amenities[2].status === payload.aminities[2].status
-        ) {
-          return true;
-        }
-        return false;
-      });
-    };
-
-    const resultsFilter = resultsByAminities(
-      resultsByProperty(resultsByPrice(resultsByDuration)),
-    );
-
-    handleFilter(resultsFilter);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={(e) => handleSubmit(e)}>
       <h4 style={{ marginTop: '20px', marginBottom: '20px' }}> Type of Rent</h4>
       <CustomRadioButton
         arrData={typeOfRentArr}
@@ -174,20 +83,20 @@ const Sidebar = ({ handleFilter }) => {
         handleSelected={handlePropertyRoom}
         title="Bedroom"
         name="Beds"
-        arrData={aminitiesArr}
+        arrData={propertyArr}
       />
 
       <CustomRadioButton
         handleSelected={handlePropertyRoom}
         title="Bathroom"
         name="Baths"
-        arrData={aminitiesArr}
+        arrData={propertyArr}
       />
 
-      <h4 style={{ marginTop: '20px', marginBottom: '20px' }}>Aminities</h4>
-      <Aminities
-        handleAminities={handleAminities}
-        stateAminities={payload.aminities}
+      <h4 style={{ marginTop: '20px', marginBottom: '20px' }}>Amenities</h4>
+      <Amenities
+        handleAmenities={handleAmenities}
+        stateAmenities={amenitiesArr}
       />
       <h4 style={{ marginTop: '20px', marginBottom: '20px' }}>Budget</h4>
       <div
@@ -208,7 +117,9 @@ const Sidebar = ({ handleFilter }) => {
         />
       </div>
       <div style={{ textAlign: 'right' }}>
-        <button className="buttonApply">APPLY</button>
+        <button type="submit" className="buttonApply">
+          APPLY
+        </button>
       </div>
     </form>
   );

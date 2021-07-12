@@ -1,4 +1,5 @@
 import { createContext, useReducer } from 'react';
+import { getDataLocalStorage, saveToLocalStorage } from '../../helper';
 import {
   ADD_NEW_USER,
   HIDE_ALERT,
@@ -6,6 +7,7 @@ import {
   LOGIN,
   LOGOUT,
   SHOW_SIGN_IN,
+  UPDATE_PHOTO,
 } from './action';
 
 export const UserContext = createContext();
@@ -64,7 +66,7 @@ const handleSignUp = ({ currentState, payload }) => {
     found = false;
     console.log('new');
   }
-  console.log(newUser);
+
   return {
     ...currentState,
     tempUser: newUser,
@@ -93,12 +95,12 @@ const userReducer = (state, action) => {
           name: '',
           email: '',
           password: '',
+          role: '',
         },
         isLogin: false,
         isSignUp: false,
       };
     case ADD_NEW_USER:
-      console.log(handleSignUp({ currentState: state, payload }));
       return handleSignUp({ currentState: state, payload });
     case HIDE_ALERT:
       return {
@@ -114,6 +116,16 @@ const userReducer = (state, action) => {
       return {
         ...state,
         showModalLogin: false,
+      };
+    case UPDATE_PHOTO:
+      const userLocal = getDataLocalStorage({ key: 'user' });
+      saveToLocalStorage({
+        key: 'user',
+        payload: { ...userLocal, image_profile: payload },
+      });
+      return {
+        ...state,
+        user: { ...state.user, image_profile: payload },
       };
     default:
       throw new Error('case unknown');

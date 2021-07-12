@@ -1,35 +1,59 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
-import { getDataLocalStorage } from '../helper';
+import { useQuery } from 'react-query';
 
 import CustomCardBox from '../components/CustomCardBox';
-import { BookingContext } from '../contexts/BookingContext';
 import { SearchContext } from '../contexts/SearchContext';
 import { HIDE, SHOW } from '../contexts/SearchContext/action';
+import { API } from '../config';
+import Loader from '../components/utils/Loader';
 
 const MyBooking = () => {
-  const { dispatch } = useContext(BookingContext);
-  const {dispatch:dispatchSearch} = useContext(SearchContext)
-  const [payload, setPayload] = useState(null);
+  const { dispatch: dispatchSearch } = useContext(SearchContext);
+
+  const loadData = async () => {
+    try {
+      const response = await API.get('bookings');
+
+      if (response.status !== 200) {
+        throw new Error('An error has occured');
+      }
+      return response.data.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
 
   useEffect(() => {
-    const fromLocal = getDataLocalStorage({ key: 'booking' });
-    setPayload(fromLocal);
-    dispatch({ type: 'ADD', payload: fromLocal });
     dispatchSearch({ type: HIDE });
     return () => {
-      setPayload(null);
       dispatchSearch({ type: SHOW });
     };
   }, []);
 
+  const { isLoading, isError, data, isSuccess } = useQuery('booking', loadData);
+
   return (
-    <Container fluid className="bg-identity p-5" style={{height: payload === null && '87vh'}}>
-      {payload &&
-        payload.map((book, idx) => {
-          return <CustomCardBox key={idx} book={book} type='booking' pushTo="/history" />;
+    <Container
+      fluid
+      className="bg-identity p-5"
+      style={{ height: data && data.length === 0 && '87vh' }}
+    >
+      {isLoading && <Loader />}
+      {isError && <h2>There was an error processing your request....</h2>}
+      {isSuccess &&
+        data.map((book) => {
+          return (
+            <span key={book.id}>
+              <CustomCardBox book={book} type="booking" pushTo="/history" />
+            </span>
+          );
         })}
-      {payload === null && <h2 style={{textAlign:'center'}}>Oppsss.. Coba booking terlebih dahulu</h2>}
+      {isSuccess && data.length === 0 && (
+        <h2 style={{ textAlign: 'center' }}>
+          Oppsss.. Coba booking terlebih dahulu
+        </h2>
+      )}
     </Container>
   );
 };

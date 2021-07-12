@@ -9,12 +9,7 @@ import userIconSvg from '../../assets/images/user-icon.svg';
 import { SearchContext } from '../../contexts/SearchContext';
 import { SEARCH_FILTER } from '../../contexts/SearchContext/action';
 import { UserContext } from '../../contexts/UserContext';
-import {
-  ADD_NEW_USER,
-  HIDE_SIGN_IN,
-  LOGIN,
-  LOGOUT,
-} from '../../contexts/UserContext/action';
+import { LOGIN, LOGOUT } from '../../contexts/UserContext/action';
 
 import Styles from './Navbar.module.css';
 import {
@@ -50,15 +45,18 @@ const Header = () => {
 
   // handle submit login
   const handleSubmitSignin = (payload) => {
-    dispatchUser({ type: LOGIN, payload });
-    saveToLocalStorage({ key: 'user', payload });
+    const { user, token } = payload;
+    dispatchUser({ type: LOGIN, payload: user });
+    console.log(payload);
+    saveToLocalStorage({ key: 'user', payload: user });
+    saveToLocalStorage({ key: 'token', payload: token });
   };
 
   // handle submit signup
-  const handleSubmitSignup = (payload) => {
-    dispatchUser({ type: ADD_NEW_USER, payload });
-    // handleModalShow({ name: show.nameSignIn });
-    if (!stateUser.isSignUp) {
+  const handleSubmitSignup = (data) => {
+    const { isSignUp } = data;
+
+    if (!isSignUp) {
       setShow((currentState) => ({
         ...currentState,
         signIn: true,
@@ -66,7 +64,7 @@ const Header = () => {
       }));
     }
   };
-  
+
   const handleModalTo = ({ name }) => {
     if (name === 'signIn') {
       setShow((currentState) => ({
@@ -86,7 +84,7 @@ const Header = () => {
   // handle search
   const handleSearch = (e) => {
     const { value } = e.target;
-    dispatchSearch({ type: SEARCH_FILTER, searchText: value });
+    // dispatchSearch({ type: SEARCH_FILTER, searchText: value });
     setSearch(value);
   };
 
@@ -97,8 +95,8 @@ const Header = () => {
     }));
   };
 
-
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     dispatchSearch({ type: SEARCH_FILTER, searchText: getSearch });
   };
 
@@ -111,6 +109,7 @@ const Header = () => {
     });
     setUserDropdownShow(false);
     removeDataLocalStorage({ key: 'user' });
+    removeDataLocalStorage({ key: 'token' });
     dispatchUser({ type: LOGOUT });
   };
 
@@ -127,12 +126,14 @@ const Header = () => {
   const BtnNotLogin = () => {
     return (
       <>
-        <ModalSignin
-          show={show.signIn}
-          handleClose={() => handleModalShow({ name: show.nameSignIn })}
-          handleTo={() => handleModalTo({ name: show.nameSignUp })}
-          handleSubmitLogin={handleSubmitSignin}
-        />
+        {show.signIn && (
+          <ModalSignin
+            show={show.signIn}
+            handleClose={() => handleModalShow({ name: show.nameSignIn })}
+            handleTo={() => handleModalTo({ name: show.nameSignUp })}
+            handleSubmitLogin={handleSubmitSignin}
+          />
+        )}
         <ButtonReuse
           className={`${Styles.fontBold} mr-3 my-2`}
           style={{ color: 'darkgrey' }}
@@ -141,12 +142,14 @@ const Header = () => {
         >
           Sign in
         </ButtonReuse>
-        <ModalSignup
-          show={show.signUp}
-          handleClose={() => handleModalShow({ name: show.nameSignUp })}
-          handleTo={() => handleModalTo({ name: show.nameSignIn })}
-          handleSubmitSignup={handleSubmitSignup}
-        />
+        {show.signUp && (
+          <ModalSignup
+            show={show.signUp}
+            handleClose={() => handleModalShow({ name: show.nameSignUp })}
+            handleTo={() => handleModalTo({ name: show.nameSignIn })}
+            handleSubmitSignup={handleSubmitSignup}
+          />
+        )}
         <ButtonReuse
           className={`${Styles.signUpBtn} ${Styles.fontBold} my-2`}
           onClick={() => handleModalShow({ name: show.nameSignUp })}
@@ -165,8 +168,7 @@ const Header = () => {
       </Link>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        
-        <Form className="d-flex m-auto">
+        <Form className="d-flex m-auto" onSubmit={handleSubmit}>
           {showSearch && (
             <InputGroup className={Styles.inputGroup}>
               <FormControl
@@ -182,7 +184,7 @@ const Header = () => {
               <InputGroup.Append className={Styles.inputGroupAppend}>
                 <Button
                   id="search-button"
-                  onClick={handleSubmit}
+                  type="submit"
                   className={`${Styles.srcButton}`}
                 >
                   <i className="fa fa-search"></i>
@@ -191,12 +193,16 @@ const Header = () => {
             </InputGroup>
           )}
         </Form>
-        
+
         {stateUser.isLogin ? (
           <>
             <img
               className={Styles.img}
-              src={userIconSvg}
+              src={
+                !stateUser.user.image_profile
+                  ? userIconSvg
+                  : stateUser.user.image_profile
+              }
               alt="username"
               height="50px"
               onMouseOver={() =>

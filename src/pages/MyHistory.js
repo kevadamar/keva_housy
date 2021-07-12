@@ -1,36 +1,61 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
-import { getDataLocalStorage } from '../helper';
+import { useQuery } from 'react-query';
 
 import CustomCardBox from '../components/CustomCardBox';
-import { BookingContext } from '../contexts/BookingContext';
 import { HIDE, SHOW } from '../contexts/SearchContext/action';
 import { SearchContext } from '../contexts/SearchContext';
+import { API } from '../config';
+import Loader from '../components/utils/Loader';
+import { UserContext } from '../contexts/UserContext';
 
 const MyHistory = () => {
-  const { dispatch } = useContext(BookingContext);
-  const {dispatch:dispatchSearch} = useContext(SearchContext)
-  const [payload, setPayload] = useState(null);
+  const { dispatch: dispatchSearch } = useContext(SearchContext);
+  const { state:stateUser } = useContext(UserContext);
 
   useEffect(() => {
-    const fromLocal = getDataLocalStorage({ key: 'history' });
-    setPayload(fromLocal);
-    dispatch({ type: 'ADD', payload: fromLocal });
     dispatchSearch({ type: HIDE });
     return () => {
-      dispatch({type:'REMOVE'})
-      setPayload(null);
       dispatchSearch({ type: SHOW });
     };
   }, []);
 
+  const fetchData = async () => {
+    try {
+      const response = await API.get(`orders`);
+
+      if (response.status !== 200) {
+        throw new Error('An error has occured');
+      }
+      return response.data.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
+
+  const { isLoading, data, isError, isSuccess } = useQuery('orders', fetchData);
+
   return (
-    <Container fluid className="bg-identity p-5" style={{height: (payload === null || payload.length === 1) && '87vh'}}>
-      {payload &&
-        payload.map((book, idx) => {
-          return <CustomCardBox key={idx} book={book} type='history' />;
+    <Container
+      fluid
+      className="bg-identity p-5"
+      style={{ height: data && data.length === 0 && '87vh' }}
+    >
+      {isLoading && <Loader />}
+      {isError && <h2>There was an error processing your request....</h2>}
+      {isSuccess &&
+        data.map((book) => {
+          return (
+            <span key={book.id}>
+              <CustomCardBox book={book} type="history" />
+            </span>
+          );
         })}
-    {payload === null && <h2 style={{textAlign:'center'}}>Oppsss.. Coba booking terlebih dahulu</h2>}
+      {isSuccess && data.length === 0 && (
+        <h2 style={{ textAlign: 'center' }}>
+          {stateUser.user.role === 'tenant' ? 'Oppsss.. Coba menginap terlebih dahulu' : 'No Data History...'}
+        </h2>
+      )}
     </Container>
   );
 };

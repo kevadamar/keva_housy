@@ -7,7 +7,7 @@
 
 .imageWrapper {
   display: grid;
-  grid-template-areas: "firstimage firstimage firstimage" "firstimage firstimage firstimage" "secondimage thirdimage fourthimage";
+  grid-template-areas: 'firstimage firstimage firstimage' 'firstimage firstimage firstimage' 'secondimage thirdimage fourthimage';
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   gap: 12px 14px;
@@ -32,10 +32,11 @@
   border-radius: 5px;
 }
 
-.firstImage {
+.fitImage {
   width: 100%;
   object-fit: cover;
-}Í
+  height: 180px;
+}
 
 .secondImageWrapper {
   display: flex;
@@ -44,14 +45,9 @@
 
   grid-area: secondimage;
   /* background-color: gray; */
-  object-fit: cover;
   overflow: hidden;
 
   border-radius: 5px;
-}
-.secondImage {
-  width: 100%;
-  object-fit: cover;
 }
 
 .thirdImageWrapper {
@@ -60,15 +56,10 @@
   align-items: center;
 
   grid-area: thirdimage;
-  background-color: gray;
+  /* background-color: gray; */
   overflow: hidden;
 
   border-radius: 5px;
-}
-
-.thirdImage {
-  width: 100%;
-  object-fit: cover;
 }
 
 .fourthImageWrapper {
@@ -77,13 +68,8 @@
   align-items: center;
 
   grid-area: fourthimage;
-  background-color: gray;
+  /* background-color: gray; */
   overflow: hidden;
 
   border-radius: 5px;
-}
-
-.fourthImage {
-  width: 100%;
-  object-fit: cover;
 }

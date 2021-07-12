@@ -18,7 +18,23 @@
   position: relative;
 }
 
-.caretDown::before{
+.iconPassword,
+.iconPassword:hover {
+  cursor: pointer;
+  position: absolute;
+  font-size: 1.3em;
+  right: 16px;
+}
+
+.iconPasswordDefault {
+  bottom: 5px;
+}
+
+.iconPasswordError {
+  bottom: 28px;
+}
+
+.caretDown::before {
   top: 41px;
   right: 15px;
   content: '';

@@ -6,34 +6,45 @@ import Styles2 from './ModalOrder.module.css';
 import ButtonReuse from '../utils/ButtonReuse';
 
 const ModalOrder = ({ show, handleClose, handleSubmitBooking }) => {
+  const dateNow = new Date();
+  const dateCheckOut = new Date();
+  dateCheckOut.setDate(dateCheckOut.getDate() + 1);
+
   const [payload, setPayload] = useState({
-    checkIn: '',
-    checkOut: '',
+    checkin: dateNow,
+    checkout: null,
+    mindate: null,
   });
 
   const handleChangeCheckIn = (value) => {
+    const newMinDate = new Date(value);
+    newMinDate.setDate(newMinDate.getDate() + 1);
+
     setPayload((currenState) => ({
       ...currenState,
-      checkIn: value,
+      checkin: value,
+      mindate: newMinDate,
     }));
   };
 
   const handleChangeCheckOut = (value) => {
     setPayload((currenState) => ({
       ...currenState,
-      checkOut: value,
+      checkout: value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleSubmitBooking(payload);
+    handleSubmitBooking({
+      checkin: payload.checkin,
+      checkout: payload.checkout,
+    });
     setPayload({
-      checkIn: '',
-      checkOut: '',
+      checkin: dateNow,
+      checkout: null,
     });
   };
-
 
   const CustomDate = forwardRef(({ value, onClick }, ref) => {
     return (
@@ -70,8 +81,13 @@ const ModalOrder = ({ show, handleClose, handleSubmitBooking }) => {
               className={Styles2.datePicker}
               placeholderText="Select your date"
               dateFormat="dd MMMM yyyy"
-              selected={payload.checkIn || new Date()}
+              selected={payload.checkin || dateNow}
+              minDate={dateNow}
               onChange={(datePicked) => handleChangeCheckIn(datePicked)}
+              peekNextMonth
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
               customInput={<CustomDate />}
             />
             <span className={Styles2.caretDown}></span>
@@ -83,8 +99,13 @@ const ModalOrder = ({ show, handleClose, handleSubmitBooking }) => {
               className={Styles2.datePicker}
               placeholderText="Select your date"
               dateFormat="dd MMMM yyyy"
-              selected={payload.checkOut}
+              selected={payload.checkout}
+              minDate={payload.mindate || dateCheckOut}
               onChange={(datePicked) => handleChangeCheckOut(datePicked)}
+              peekNextMonth
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
               customInput={<CustomDate />}
             />
             <span className={Styles2.caretDown}></span>
@@ -96,7 +117,7 @@ const ModalOrder = ({ show, handleClose, handleSubmitBooking }) => {
               style={{ backgroundColor: '#5A57AB', color: ' white' }}
               type="submit"
               block
-              disabled={!payload.checkIn || !payload.checkOut}
+              disabled={!payload.checkin || !payload.checkout}
             >
               ORDER
             </ButtonReuse>

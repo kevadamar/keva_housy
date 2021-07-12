@@ -1,3 +1,7 @@
+.fileInput::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
 .button {
   display: flex;
   justify-content: flex-end;
@@ -169,9 +173,12 @@
   justify-content: center;
 
   box-sizing: border-box;
+  object-fit: cover;
+}
+
+.imageWrapperBooking {
   border: 3px solid black;
 
-  object-fit: cover;
   background-color: lightgray;
 }
 

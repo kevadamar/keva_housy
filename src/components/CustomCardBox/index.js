@@ -1,5 +1,8 @@
 import { useContext, useState } from 'react';
 import { Container, Modal, Table } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
+import QRCode from 'qrcode.react';
+
 import ButtonReuse from '../utils/ButtonReuse';
 
 import brandIcon from '../../assets/images/brand.svg';
@@ -8,24 +11,54 @@ import verticalLine from '../../assets/images/line-icon.svg';
 import ellipseEnd from '../../assets/images/ellipse-end.svg';
 
 import Styles from './CustomCard.module.css';
-import { useHistory } from 'react-router-dom';
-import { BookingContext } from '../../contexts/BookingContext';
 import { UserContext } from '../../contexts/UserContext';
-import {
-  getDataLocalStorage,
-  removeDataLocalStorage,
-  saveToLocalStorage,
-} from '../../helper';
+import { API } from '../../config';
+import { useMutation } from 'react-query';
 
 const CustomCardBox = ({ book, pushTo, type }) => {
   const router = useHistory();
 
-  const { state, dispatch } = useContext(BookingContext);
   const { state: stateUser } = useContext(UserContext);
 
   const [show, setshow] = useState(false);
+  const [file, setFile] = useState({ file: '', fileUrl: '' });
+  const [changeFile, setChangeFile] = useState(false);
 
   const formatDateOrder = (date) => {
+    const dayNumber = new Date(date).getDay();
+    const monthNumber = new Date(date).getMonth();
+
+    const day = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ];
+
+    const month = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'Desember',
+    ];
+
+    return `${day[dayNumber]}, ${new Date(date).getDate() - 1} ${
+      month[monthNumber]
+    } ${new Date(date).getFullYear()}`;
+  };
+
+  const formatDate = (date) => {
     const dayNumber = new Date(date).getDay();
     const monthNumber = new Date(date).getMonth();
 
@@ -59,52 +92,119 @@ const CustomCardBox = ({ book, pushTo, type }) => {
     } ${new Date(date).getFullYear()}`;
   };
 
-  const handlePushTo = () => {
-    router.push(pushTo);
-    handlePay();
+  const handleApproval = async (data) => {
+    try {
+      const response = await API.patch(`/order/${book.id}/status`, data);
+      if (response.status !== 200) {
+        throw new Error(`Error ${response.status}`);
+      }
+      return response.data.message;
+    } catch (error) {
+      throw new Error('Internal Server Error');
+    }
   };
 
-  const handlePay = () => {
-    const result = state.booking.map((item) => {
-      if (item.id === book.id) {
-        item.status = 2;
-        return item;
+  const handlePayment = async (data) => {
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+      const response = await API.post(`/order`, data, config);
+      console.log(response);
+      if (response.status !== 201) {
+        throw new Error(`Error ${response.status}`);
       }
-      return item;
-    });
-    console.log(result);
-    const resultHistory = getDataLocalStorage({ key: 'history' });
+      return response.data.message;
+    } catch (error) {
+      throw new Error('Internal Server Error');
+    }
+  };
 
-    saveToLocalStorage({
-      key: 'history',
-      payload: !resultHistory ? result : resultHistory.concat(result),
-    });
-    dispatch({ type: 'REMOVE' });
-    removeDataLocalStorage({ key: 'booking' });
+  const handleCancelBooking = async (data) => {
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const response = await API.delete(`/booking/${data}`, config);
+      console.log(response);
+      if (response.status !== 200) {
+        throw new Error(`Error ${response.status}`);
+      }
+      return response.data.message;
+    } catch (error) {
+      throw new Error('Internal Server Error');
+    }
+  };
+
+  const mutationApproval = useMutation(handleApproval, {
+    onSuccess: async ({ data }) => {
+      console.log(`data`, data);
+      router.go(0);
+    },
+    onError: async () => {
+      console.log('error');
+    },
+  });
+
+  const mutationPayment = useMutation(handlePayment, {
+    onSuccess: async ({ data }) => {
+      console.log(`data`, data);
+      setshow(true);
+    },
+    onError: async (error) => {
+      console.log('error', error);
+    },
+  });
+
+  const mutationCancelBooking = useMutation(handleCancelBooking, {
+    onSuccess: async ({ data }) => {
+      console.log(`data`, data);
+      router.go(0);
+    },
+    onError: async (error) => {
+      console.log('error', error);
+    },
+  });
+
+  const handlePushTo = () => {
+    router.push(pushTo);
   };
 
   const handleApprove = () => {
-    const result = getDataLocalStorage({ key: 'history' }).map((item) => {
-      if (item.bookId === book.bookId) {
-        item.status = 3;
-        return item;
-      }
-      return item;
-    });
-    saveToLocalStorage({ key: 'history', payload: result });
-    router.go(0);
+    mutationApproval.mutate({ status: 3 });
   };
 
   const handleCancel = () => {
-    const result = getDataLocalStorage({ key: 'history' }).map((item) => {
-      if (item.bookId === book.bookId) {
-        item.status = 0;
-        return item;
-      }
-      return item;
-    });
-    saveToLocalStorage({ key: 'history', payload: result });
-    router.go(0);
+    mutationApproval.mutate({ status: 0 });
+  };
+
+  const onPay = () => {
+    const {
+      checkin,
+      checkout,
+      total,
+      house: { id: house_id },
+      id,
+    } = book;
+
+    const formData = new FormData();
+    formData.append('checkin', checkin);
+    formData.append('checkout', checkout);
+    formData.append('total', total);
+    formData.append('house_id', house_id);
+    formData.append('status', 2);
+    formData.append('booking_id', id);
+    formData.append('imageFile', file.file, file.file.name);
+
+    mutationPayment.mutate(formData);
+  };
+
+  const onCancel = () => {
+    mutationCancelBooking.mutate(book.id);
   };
 
   return (
@@ -118,15 +218,15 @@ const CustomCardBox = ({ book, pushTo, type }) => {
             ) : (
               <h2 className={Styles.bookingTitle}>Booking</h2>
             )}
-            <p className={Styles.bookingDate}>
-              {formatDateOrder(book.orderedDate)}
-            </p>
+            <p className={Styles.bookingDate}>{formatDate(book.createdAt)}</p>
           </div>
         </div>
         <div className={Styles.cardContent}>
           <div className={Styles.cardContentName}>
-            <h2>{`House ${book.houseName}`}</h2>
-            <p className={Styles.houseAddress}>{book.house.address}</p>
+            <h2>{book.house.name}</h2>
+            <p className={Styles.houseAddress}>
+              {book.house.address}, {book.house.city.name}
+            </p>
             <div className={Styles.bookingStatus}>
               {book.status === 3 ? (
                 <div className={Styles.approveStatus}>Approve</div>
@@ -152,12 +252,12 @@ const CustomCardBox = ({ book, pushTo, type }) => {
             <div className={Styles.dateWrapper}>
               <div className={Styles.checkinWrapper}>
                 <h3>Check-in</h3>
-                <p>{formatDateOrder(book.durationDate.checkIn)}</p>
+                <p>{formatDateOrder(book.checkin)}</p>
               </div>
 
               <div className={Styles.checkoutWrapper}>
                 <h3>Check-out</h3>
-                <p>{formatDateOrder(book.durationDate.checkOut)}</p>
+                <p>{formatDateOrder(book.checkout)}</p>
               </div>
             </div>
           </div>
@@ -166,37 +266,91 @@ const CustomCardBox = ({ book, pushTo, type }) => {
             <div className={Styles.amenities}>
               <h3>Amenities</h3>
               <div>
-                <p>
-                  {book.house.amenities[0].status &&
-                    book.house.amenities[0].name}
-                </p>
-                <p>
-                  {book.house.amenities[1].status &&
-                    book.house.amenities[1].name}
-                </p>
-                <p>
-                  {book.house.amenities[2].status &&
-                    book.house.amenities[2].name}
-                </p>
+                {book.house.amenities?.map((amenities) => (
+                  <p>{amenities}</p>
+                ))}
               </div>
             </div>
 
             <div className={Styles.duration}>
               <h3>Type of Rent</h3>
-              <p>{book.house.duration}</p>
+              <p>{book.house.typeRent}</p>
             </div>
           </div>
 
           <div className={Styles.cardContentProof}>
-            <div className={Styles.imageWrapper}>
-              {/* // place image file or barcode */}
-            </div>
             {book.status === 1 ? (
-              <p>Upload payment proof</p>
-            ) : book.status === 0 ? null : null}
+              <>
+                <div
+                  className={`${Styles.imageWrapper} ${Styles.imageWrapperBooking}`}
+                >
+                  {changeFile ? (
+                    <img
+                      style={{ objectFit: 'contain', width: '100%' }}
+                      src={file.fileUrl}
+                      alt="proof"
+                    />
+                  ) : (
+                    ''
+                  )}
+                </div>
+                {!changeFile && (
+                  <ButtonReuse
+                    className="font-weight-bold"
+                    style={{
+                      backgroundColor: '#5A57AB',
+                      color: ' white',
+                      marginTop: '5px',
+                      padding: '0 40px',
+                    }}
+                  >
+                    <label htmlFor="fileInput" style={{ cursor: 'pointer' }}>
+                      <span>Choose</span>
+                    </label>
+                    <input
+                      id="fileInput"
+                      style={{ display: 'none' }}
+                      type="file"
+                      className={Styles.fileInput}
+                      onChange={(e) => {
+                        setFile({
+                          file: e.target.files[0],
+                          fileUrl: URL.createObjectURL(e.target.files[0]),
+                        });
+                        setChangeFile(true);
+                      }}
+                    />
+                  </ButtonReuse>
+                )}
+                {file.file && (
+                  <ButtonReuse
+                    className="font-weight-bold"
+                    style={{
+                      color: ' white',
+                      marginTop: '5px',
+                      padding: '3px 43px',
+                      cursor: 'pointer',
+                    }}
+                    variant="warning"
+                    onClick={() => {
+                      setFile({ file: '', fileUrl: '' });
+                      setChangeFile(false);
+                    }}
+                  >
+                    <span>Delete</span>
+                  </ButtonReuse>
+                )}
+              </>
+            ) : (
+              <>
+                <div className={Styles.imageWrapper}>
+                  <QRCode value="https://kevadamargalih.netlify.app/" />
+                </div>
+              </>
+            )}
           </div>
         </div>
-        <Table responsive="sm" style={{ marginTop: '30px' }}>
+        <Table responsive="sm" style={{ marginTop: '50px' }}>
           <thead>
             <tr>
               <th>No</th>
@@ -211,11 +365,22 @@ const CustomCardBox = ({ book, pushTo, type }) => {
               <td className="text-secondary">1</td>
               <td className="text-secondary">{book.user.fullname}</td>
               <td className="text-secondary">{book.user.gender}</td>
-              <td className="text-secondary">{book.user.phoneNumber}</td>
+              <td className="text-secondary">+62{book.user.phone_number}</td>
               <td style={{ textAlign: 'right', fontWeight: 'bold' }}>
                 <span style={{ paddingRight: '12px' }}>Long time rent</span>
-                <span style={{ paddingRight: '72px' }}>:</span>
-                {`1 ${book.house.duration}`}
+                <span
+                  style={{
+                    paddingRight:
+                      book.house.typeRent === 'Year'
+                        ? '78px'
+                        : book.house.typeRent === 'Month'
+                        ? '63px'
+                        : '83px',
+                  }}
+                >
+                  :
+                </span>
+                {`${book.house.typeRent}`}
               </td>
             </tr>
             <tr>
@@ -236,18 +401,31 @@ const CustomCardBox = ({ book, pushTo, type }) => {
       </Container>
       <span className={Styles.button}>
         {type === 'booking' && stateUser.user.role !== 'owner' && (
-          <ButtonReuse
-            className="font-weight-bold"
-            style={{
-              backgroundColor: '#5A57AB',
-              color: ' white',
-              padding: '10px 65px',
-            }}
-            onClick={() => setshow(true)}
-            disabled={book.status !== 1}
-          >
-            PAY
-          </ButtonReuse>
+          <>
+            <ButtonReuse
+              className="font-weight-bold mr-2"
+              style={{
+                color: ' white',
+                padding: '10px 45px',
+              }}
+              variant="danger"
+              onClick={onCancel}
+            >
+              CANCEL
+            </ButtonReuse>
+            <ButtonReuse
+              className="font-weight-bold"
+              style={{
+                backgroundColor: '#5A57AB',
+                color: ' white',
+                padding: '10px 65px',
+              }}
+              onClick={onPay}
+              disabled={!file.file}
+            >
+              PAY
+            </ButtonReuse>
+          </>
         )}
         {stateUser.user.role === 'owner' && book.status === 2 && (
           <>
