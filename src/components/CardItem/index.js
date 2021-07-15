@@ -34,7 +34,7 @@ function CardItem({ item }) {
           {item.bedroom} Beds, {item.bathroom} Baths, {item.area} Sqft
         </Card.Text>
         <Card.Text className={Styles.cardTextContent}>
-          <span style={{ fontSize: '9px', color: 'grey' }}>
+          <span className={Styles.cardTitle}>
             {item.address}, {item.city.name}
           </span>
         </Card.Text>

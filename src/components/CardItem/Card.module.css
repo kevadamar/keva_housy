@@ -3,7 +3,7 @@
   padding: 10px;
   background-color: transparent;
   border: 3px solid lightgrey;
-  transition: all 0.4s cubic-bezier(0.84, -0.18, 0.31, .6) 0.1s;
+  transition: all 0.4s cubic-bezier(0.84, -0.18, 0.31, 0.6) 0.1s;
 }
 
 .card:hover {
@@ -38,4 +38,14 @@
 
 .cardTextContent {
   margin-bottom: 0;
+}
+
+.cardTitle {
+  font-size: 9px;
+  color: grey;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
 }

@@ -1,6 +1,12 @@
 import { useContext, useEffect } from 'react';
 import { useState } from 'react';
-import { Form, FormControl, Button, InputGroup, Navbar } from 'react-bootstrap';
+import {
+  Form,
+  FormControl,
+  Button,
+  InputGroup,
+  Navbar,
+} from 'react-bootstrap';
 
 import { Link } from 'react-router-dom';
 
@@ -21,6 +27,7 @@ import CustomDropdown from '../CustomDropdown';
 import ModalSignin from '../ModalSignin';
 import ModalSignup from '../ModalSignup';
 import ButtonReuse from '../utils/ButtonReuse';
+import BadgeNotification from './BadgeNotification';
 
 const Header = () => {
   // contexts
@@ -196,6 +203,9 @@ const Header = () => {
 
         {stateUser.isLogin ? (
           <>
+            {stateUser.user.role === 'owner' && (
+              <BadgeNotification/>
+            )}
             <img
               className={Styles.img}
               src={

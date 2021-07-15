@@ -21,6 +21,8 @@ const Owner = () => {
   const [idOrder, setIdOrder] = useState('');
 
   const [page, setPage] = useState(1);
+  const [countData, setCountData] = useState(0);
+
   const nextPage = () => {
     setPage((old) => old + 1);
   };
@@ -64,6 +66,7 @@ const Owner = () => {
       if (response.status !== 200) {
         throw new Error('An error has occured');
       }
+      setCountData(response.data.countData)
       return response.data.data;
     } catch (error) {
       throw new Error('Internal Server Error');
@@ -157,7 +160,7 @@ const Owner = () => {
               Previous
             </ButtonReuse>
             <span className="px-2">{page}</span>
-            <ButtonReuse onClick={nextPage}>Next</ButtonReuse>
+            <ButtonReuse onClick={nextPage} disabled={data?.length <= 4 || (countData > 0 && countData === 5)  ? true : false}>Next</ButtonReuse>
           </Container>
         )}
         {show && (

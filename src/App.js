@@ -11,12 +11,13 @@ import Owner from './pages/Owner';
 import AddProperty from './components/AddProperty';
 import { getDataLocalStorage } from './helper';
 import { setAuthToken } from './config';
+import MyHouse from './pages/Myhouse';
+import DetailProperty from './components/DetailProperty';
 
 if (getDataLocalStorage({ key: 'token' })) {
   setAuthToken(getDataLocalStorage({ key: 'token' }));
 }
 function App() {
-
   return (
     <Router>
       <Header />
@@ -26,9 +27,15 @@ function App() {
         <PrivateRoute exact path="/profile" component={Profile} />
         <PrivateRoute exact path="/booking" component={MyBooking} />
         <PrivateRoute exact path="/history" component={MyHistory} />
+
+        {/* route owner */}
         <PrivateRoute exact path="/owner" component={Owner} />
         <PrivateRoute exact path="/owner/history" component={MyHistory} />
+
+        {/* route owner house */}
+        <PrivateRoute exact path="/owner/my-house" component={MyHouse} />
         <PrivateRoute exact path="/owner/add" component={AddProperty} />
+        <PrivateRoute exact path="/owner/my-house/detail/:id" component={DetailProperty} />
       </Switch>
     </Router>
   );

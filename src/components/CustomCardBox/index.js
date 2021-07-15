@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Container, Modal, Table } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import QRCode from 'qrcode.react';
@@ -14,9 +14,12 @@ import Styles from './CustomCard.module.css';
 import { UserContext } from '../../contexts/UserContext';
 import { API } from '../../config';
 import { useMutation } from 'react-query';
+import { io } from 'socket.io-client';
+import { getDataLocalStorage } from '../../helper';
 
 const CustomCardBox = ({ book, pushTo, type }) => {
   const router = useHistory();
+  const socket = useRef();
 
   const { state: stateUser } = useContext(UserContext);
 
@@ -104,7 +107,7 @@ const CustomCardBox = ({ book, pushTo, type }) => {
     }
   };
 
-  const handlePayment = async (data) => {
+  const handlePayment = async ({ data, ownerId }) => {
     try {
       const config = {
         headers: {
@@ -112,11 +115,11 @@ const CustomCardBox = ({ book, pushTo, type }) => {
         },
       };
       const response = await API.post(`/order`, data, config);
-      console.log(response);
+      console.log('owner id', ownerId);
       if (response.status !== 201) {
         throw new Error(`Error ${response.status}`);
       }
-      return response.data.message;
+      return ownerId;
     } catch (error) {
       throw new Error('Internal Server Error');
     }
@@ -151,8 +154,9 @@ const CustomCardBox = ({ book, pushTo, type }) => {
   });
 
   const mutationPayment = useMutation(handlePayment, {
-    onSuccess: async ({ data }) => {
-      console.log(`data`, data);
+    onSuccess: async (data) => {
+      console.log(`data pay`, data);
+      socket.current.emit('send-notification', data);
       setshow(true);
     },
     onError: async (error) => {
@@ -187,7 +191,10 @@ const CustomCardBox = ({ book, pushTo, type }) => {
       checkin,
       checkout,
       total,
-      house: { id: house_id },
+      house: {
+        id: house_id,
+        owner: { id: owner_id },
+      },
       id,
     } = book;
 
@@ -200,12 +207,20 @@ const CustomCardBox = ({ book, pushTo, type }) => {
     formData.append('booking_id', id);
     formData.append('imageFile', file.file, file.file.name);
 
-    mutationPayment.mutate(formData);
+    mutationPayment.mutate({ data: formData, ownerId: owner_id });
   };
 
   const onCancel = () => {
     mutationCancelBooking.mutate(book.id);
   };
+
+  useEffect(() => {
+    socket.current = io('http://localhost:5000', {
+      transports: ['websocket'],
+      query: { token: getDataLocalStorage({ key: 'token' }) },
+    });
+    return () => socket.current.disconnect();
+  }, []);
 
   return (
     <>

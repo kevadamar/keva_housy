@@ -93,7 +93,7 @@ const CustomDropdown = ({ handleLogout }) => {
         <div
           className={Styles.dropdownMenu}
           onClick={() => {
-            router.push('/owner/add');
+            router.push('/owner/my-house');
           }}
         >
           <img
@@ -102,7 +102,7 @@ const CustomDropdown = ({ handleLogout }) => {
             alt="calendar icon"
             width="40px"
           />
-          <p className={Styles.textMenu}>Add Property</p>
+          <p className={Styles.textMenu}>My House</p>
         </div>
 
         <div

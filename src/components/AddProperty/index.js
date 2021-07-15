@@ -22,6 +22,7 @@ const AddProperty = () => {
   const [show, setshow] = useState(false);
 
   const [errorAmenities, setErrorAmenities] = useState(false);
+  const [errorImage, setErrorImage] = useState(false);
 
   const [dataCities, setDataCities] = useState([]);
 
@@ -100,18 +101,16 @@ const AddProperty = () => {
   });
 
   const { data, isSuccess } = useQuery('cities', fetchCity, {
-    staleTime: 300000,
+    staleTime: 30000,
   });
 
   const handleChangeCheckbox = (e) => {
-    if (payload.amenities.length === 0) {
-      setErrorAmenities((currentState) => !currentState);
-    }
     if (e.target.checked) {
       setPayload((currentState) => ({
         ...currentState,
         amenities: currentState.amenities.concat(e.target.name),
       }));
+      setErrorAmenities(false);
     } else {
       setPayload((currentState) => ({
         ...currentState,
@@ -120,28 +119,40 @@ const AddProperty = () => {
         ),
       }));
     }
+    console.log(e.target.checked, payload.amenities.length);
+    if (payload.amenities.length === 1&& !e.target.checked) {
+      setErrorAmenities(true);
+    }
   };
 
   const onSubmit = (data) => {
-    const formData = new FormData();
-    // data body
-    formData.append('name', data.nameProperty);
-    formData.append('city_id', data.city.value);
-    formData.append('address', data.address);
-    formData.append('price', data.price);
-    formData.append('typeRent', data.typeRent.value);
-    formData.append('amenities', payload.amenities);
-    formData.append('bedroom', data.bedroom.value);
-    formData.append('bathroom', data.bathroom.value);
-    formData.append('description', data.description);
-    formData.append('area', data.area);
-    // images
-    formData.append('imageFile', firstImage.file, firstImage.file.name);
-    formData.append('imageFile', secondImage.file, secondImage.file.name);
-    formData.append('imageFile', thirdImage.file, thirdImage.file.name);
-    formData.append('imageFile', fourthImage.file, fourthImage.file.name);
+    if (!firstImage.file) {
+      setErrorImage(true);
+    } else {
+      setErrorImage(false);
+      const formData = new FormData();
+      // data body
+      formData.append('name', data.nameProperty);
+      formData.append('city_id', data.city.value);
+      formData.append('address', data.address);
+      formData.append('price', data.price);
+      formData.append('typeRent', data.typeRent.value);
+      formData.append('amenities', payload.amenities);
+      formData.append('bedroom', data.bedroom.value);
+      formData.append('bathroom', data.bathroom.value);
+      formData.append('description', data.description);
+      formData.append('area', data.area);
+      // images
+      formData.append('imageFile', firstImage.file, firstImage.file.name);
+      if (secondImage.file)
+        formData.append('imageFile', secondImage.file, secondImage.file.name);
+      if (thirdImage.file)
+        formData.append('imageFile', thirdImage.file, thirdImage.file.name);
+      if (fourthImage.file)
+        formData.append('imageFile', fourthImage.file, fourthImage.file.name);
 
-    mutation.mutate(formData);
+      mutation.mutate(formData);
+    }
   };
 
   const {
@@ -204,13 +215,13 @@ const AddProperty = () => {
 
   const AlertDialogSucc = ({ show, handleClose, msg, router }) => {
     const handleClicked = () => {
-      router.push('/owner');
+      router.push('/owner/my-house');
       handleClose();
     };
 
     return (
-      <Modal show={show} backdrop="static" keyboard={false}>
-        <Modal.Body>{ msg }</Modal.Body>
+      <Modal show={show} backdrop="static" keyboard={false} centered>
+        <Modal.Body>{msg}</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClicked}>
             OK
@@ -338,7 +349,7 @@ const AddProperty = () => {
                   />
                 </Form.Group>
               </span>
-              {errorAmenities === 0 && <ErrMsg msg="Min 1 Amenities" />}
+              {errorAmenities && <ErrMsg msg="Min 1 Amenities" />}
             </Form.Group>
 
             <Form.Group className={Styles.inputGroup}>
@@ -450,6 +461,7 @@ const AddProperty = () => {
                           accept="image/*"
                           onChange={(e) => {
                             e.stopPropagation();
+                            setErrorImage(false);
                             setFirstImage({
                               file: e.target.files[0],
                               fileUrl: URL.createObjectURL(e.target.files[0]),
@@ -461,7 +473,7 @@ const AddProperty = () => {
                           htmlFor="firstImage"
                           className="text-center"
                         >
-                          <h4>Main Image</h4>
+                          <h4>*Main Image</h4>
                           <p>Upload here</p>
                         </label>
                       </>
@@ -486,9 +498,10 @@ const AddProperty = () => {
                             className="fa fa-times-circle"
                             aria-hidden="true"
                             style={{ cursor: 'pointer' }}
-                            onClick={() =>
-                              setFirstImage({ file: '', fileUrl: '' })
-                            }
+                            onClick={() => {
+                              setErrorImage(true);
+                              setFirstImage({ file: '', fileUrl: '' });
+                            }}
                           ></i>
                         </span>
                       </>
@@ -749,6 +762,7 @@ const AddProperty = () => {
                   </div>
                 </Container>
               </Container>
+              {errorImage && <ErrMsg msg="Min 1 Image" />}
             </Form.Group>
 
             <Container
