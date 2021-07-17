@@ -1,7 +1,8 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Container, Table } from 'react-bootstrap';
 import { QueryClient, useQuery } from 'react-query';
 import { useHistory } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import ModalApproval from '../components/ModalApproval';
 import ButtonReuse from '../components/utils/ButtonReuse';
 import Loader from '../components/utils/Loader';
@@ -9,8 +10,10 @@ import { API } from '../config';
 import { SearchContext } from '../contexts/SearchContext';
 import { HIDE, SHOW } from '../contexts/SearchContext/action';
 import { UserContext } from '../contexts/UserContext';
+import { getDataLocalStorage } from '../helper';
 
 const Owner = () => {
+  const socket = useRef();
   const router = useHistory();
   const queryClient = new QueryClient();
 
@@ -41,32 +44,52 @@ const Owner = () => {
   };
 
   const handleResetCache = async () => {
-    console.log('remove cache')
-    await queryClient.removeQueries(['orders',1], { exact: true });
+    console.log('remove cache');
+    await queryClient.removeQueries(['orders', 1], { exact: true });
   };
 
   useEffect(() => {
     dispatch({ type: HIDE });
-
     if (stateUser.user.role === 'tenant') {
       router.push('/');
     }
+    // connect socket and trigger
+    const user = getDataLocalStorage({ key: 'user' });
+    const token = getDataLocalStorage({ key: 'token' });
+
+    socket.current = io.connect('http://localhost:5000', {
+      transports: ['websocket'],
+      query: {
+        token,
+        email: user.email,
+      },
+    });
+
+    socket.current.emit(
+      'load-notification',
+      getDataLocalStorage({ key: 'user' }).email,
+    );
+    // end trigger
 
     return () => {
       dispatch({ type: SHOW });
+      setShow(false);
+      setIdOrder('');
+      socket.current.disconnect();
+      setPage(1);
+      setCountData(0);
       handleResetCache();
     };
   }, []);
 
-  const loadData = async (page = 1) => {
+  const loadData = async (page) => {
     try {
       const response = await API.get(`orders?page=${page}`);
-      
-      // console.log(response);
+
       if (response.status !== 200) {
         throw new Error('An error has occured');
       }
-      setCountData(response.data.countData)
+      setCountData(response.data.countData);
       return response.data.data;
     } catch (error) {
       throw new Error('Internal Server Error');
@@ -76,7 +99,7 @@ const Owner = () => {
   const { isLoading, data, isError, isSuccess } = useQuery(
     ['orders', page],
     () => loadData(page),
-    // { staleTime: 100000 },
+    { staleTime: page > 1 ? 10000 : 0 },
   );
 
   return (
@@ -108,7 +131,10 @@ const Owner = () => {
               {data?.map((item, index) => (
                 <tr
                   key={index}
-                  style={{ backgroundColor: index % 2 === 1 && 'white' }}
+                  style={{
+                    backgroundColor: index % 2 === 1 && 'white',
+                    height: '65px',
+                  }}
                 >
                   <td>{index + 1}</td>
                   <td>{item.user.fullname}</td>
@@ -160,7 +186,16 @@ const Owner = () => {
               Previous
             </ButtonReuse>
             <span className="px-2">{page}</span>
-            <ButtonReuse onClick={nextPage} disabled={data?.length <= 4 || (countData > 0 && countData === 5)  ? true : false}>Next</ButtonReuse>
+            <ButtonReuse
+              onClick={nextPage}
+              disabled={
+                data?.length <= 4 || (countData > 0 && 5 * page === countData)
+                  ? true
+                  : false
+              }
+            >
+              Next
+            </ButtonReuse>
           </Container>
         )}
         {show && (

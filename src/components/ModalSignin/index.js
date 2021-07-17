@@ -19,14 +19,14 @@ const ModalSignin = ({ show, handleClose, handleTo, handleSubmitLogin }) => {
     if (response.status !== 200) {
       throw new Error('An error has occured');
     }
-    console.log(`response.data`, response.data);
+    // console.log(`response.data`, response.data);
     return response.data;
   };
 
   const mutation = useMutation(handleLogin, {
     onSuccess: async ({ data }) => {
       setAuthToken(data.token);
-      console.log(`data`, data);
+      // console.log(`data`, data);
       handleSubmitLogin(data);
     },
     onError: async () => {

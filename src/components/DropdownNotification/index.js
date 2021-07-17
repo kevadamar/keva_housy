@@ -1,0 +1,43 @@
+import Styles from './DropdownNotification.module.css';
+
+const DropdownNotification = ({ data, onClick }) => {
+  return (
+    <>
+      {/* <span className={Styles.caretDown}></span>
+      <span className={Styles.caretDown2}></span> */}
+      <div
+        className={Styles.dropdown}
+        style={{ overflowY: data.length <= 5 ? 'unset' : 'auto' }}
+      >
+        <h3
+          style={{
+            padding: '10px',
+            paddingBottom: '5px',
+            boxShadow: ' 0 -4px 17px 0 skyblue',
+          }}
+        >
+          Notifikasi
+        </h3>
+        {data?.length > 0 &&
+          data?.map((notification, idx) => (
+            <div
+              key={idx}
+              className={Styles.dropdownMenu}
+              onClick={() => onClick(notification.id)}
+            >
+              <p className={Styles.textMenu}>
+                {notification.house.name} - {notification.user.username}
+              </p>
+              <span
+                className={`${Styles.divider} ${
+                  data.length <= 5 && Styles.wDiv
+                }`}
+              ></span>
+            </div>
+          ))}
+      </div>
+    </>
+  );
+};
+
+export default DropdownNotification;

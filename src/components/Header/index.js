@@ -1,12 +1,6 @@
 import { useContext, useEffect } from 'react';
 import { useState } from 'react';
-import {
-  Form,
-  FormControl,
-  Button,
-  InputGroup,
-  Navbar,
-} from 'react-bootstrap';
+import { Form, FormControl, Button, InputGroup, Navbar } from 'react-bootstrap';
 
 import { Link } from 'react-router-dom';
 
@@ -54,7 +48,7 @@ const Header = () => {
   const handleSubmitSignin = (payload) => {
     const { user, token } = payload;
     dispatchUser({ type: LOGIN, payload: user });
-    console.log(payload);
+    // console.log(payload);
     saveToLocalStorage({ key: 'user', payload: user });
     saveToLocalStorage({ key: 'token', payload: token });
   };
@@ -204,7 +198,9 @@ const Header = () => {
         {stateUser.isLogin ? (
           <>
             {stateUser.user.role === 'owner' && (
-              <BadgeNotification/>
+              <>
+                <BadgeNotification/>
+              </>
             )}
             <img
               className={Styles.img}

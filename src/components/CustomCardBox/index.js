@@ -21,6 +21,8 @@ const CustomCardBox = ({ book, pushTo, type }) => {
   const router = useHistory();
   const socket = useRef();
 
+  const BASE_URL = 'http://localhost:3000';
+
   const { state: stateUser } = useContext(UserContext);
 
   const [show, setshow] = useState(false);
@@ -107,7 +109,7 @@ const CustomCardBox = ({ book, pushTo, type }) => {
     }
   };
 
-  const handlePayment = async ({ data, ownerId }) => {
+  const handlePayment = async ({ data, ownerId, email }) => {
     try {
       const config = {
         headers: {
@@ -119,7 +121,7 @@ const CustomCardBox = ({ book, pushTo, type }) => {
       if (response.status !== 201) {
         throw new Error(`Error ${response.status}`);
       }
-      return ownerId;
+      return { ownerId, email };
     } catch (error) {
       throw new Error('Internal Server Error');
     }
@@ -193,7 +195,7 @@ const CustomCardBox = ({ book, pushTo, type }) => {
       total,
       house: {
         id: house_id,
-        owner: { id: owner_id },
+        owner: { id: owner_id, email },
       },
       id,
     } = book;
@@ -207,7 +209,7 @@ const CustomCardBox = ({ book, pushTo, type }) => {
     formData.append('booking_id', id);
     formData.append('imageFile', file.file, file.file.name);
 
-    mutationPayment.mutate({ data: formData, ownerId: owner_id });
+    mutationPayment.mutate({ data: formData, ownerId: owner_id, email });
   };
 
   const onCancel = () => {
@@ -217,7 +219,10 @@ const CustomCardBox = ({ book, pushTo, type }) => {
   useEffect(() => {
     socket.current = io('http://localhost:5000', {
       transports: ['websocket'],
-      query: { token: getDataLocalStorage({ key: 'token' }) },
+      query: {
+        token: getDataLocalStorage({ key: 'token' }),
+        email: getDataLocalStorage({ key: 'user' }).email,
+      },
     });
     return () => socket.current.disconnect();
   }, []);
@@ -228,9 +233,13 @@ const CustomCardBox = ({ book, pushTo, type }) => {
         <div className={Styles.bookingCardHeader}>
           <img src={brandIcon} alt="brand icon" />
           <div className={Styles.headerTitle}>
-            {type === 'history' ? (
+            {type === 'detailInvoice' && (
               <h2 className={Styles.bookingTitle}>Invoice</h2>
-            ) : (
+            )}
+            {type === 'history' && (
+              <h2 className={Styles.bookingTitle}>Invoice</h2>
+            )}
+            {type === 'booking' && (
               <h2 className={Styles.bookingTitle}>Booking</h2>
             )}
             <p className={Styles.bookingDate}>{formatDate(book.createdAt)}</p>
@@ -281,8 +290,8 @@ const CustomCardBox = ({ book, pushTo, type }) => {
             <div className={Styles.amenities}>
               <h3>Amenities</h3>
               <div>
-                {book.house.amenities?.map((amenities) => (
-                  <p>{amenities}</p>
+                {book.house.amenities?.map((amenities, idx) => (
+                  <p key={idx}>{amenities}</p>
                 ))}
               </div>
             </div>
@@ -358,9 +367,23 @@ const CustomCardBox = ({ book, pushTo, type }) => {
               </>
             ) : (
               <>
-                <div className={Styles.imageWrapper}>
-                  <QRCode value="https://kevadamargalih.netlify.app/" />
-                </div>
+                {type === 'history' && (
+                  <div className={Styles.imageWrapper}>
+                    <QRCode value={`${BASE_URL}/detail-invoice/${book.id}`} />
+                  </div>
+                )}
+                {type === 'detailInvoice' ||
+                  (type === 'booking' && (
+                    <div
+                      className={`${Styles.imageWrapper} ${Styles.imageWrapperBooking}`}
+                    >
+                      <img
+                        style={{ objectFit: 'contain', width: '100%' }}
+                        src={book.attachment}
+                        alt="proof"
+                      />
+                    </div>
+                  ))}
               </>
             )}
           </div>
@@ -389,8 +412,8 @@ const CustomCardBox = ({ book, pushTo, type }) => {
                       book.house.typeRent === 'Year'
                         ? '78px'
                         : book.house.typeRent === 'Month'
-                        ? '63px'
-                        : '83px',
+                        ? '53px'
+                        : '63px',
                   }}
                 >
                   :

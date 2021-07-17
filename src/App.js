@@ -1,5 +1,6 @@
 import './App.css';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
 import Home from './pages/Home';
 import Header from './components/Header';
 import DetailProduct from './pages/DetailProduct';
@@ -13,9 +14,11 @@ import { getDataLocalStorage } from './helper';
 import { setAuthToken } from './config';
 import MyHouse from './pages/Myhouse';
 import DetailProperty from './components/DetailProperty';
+import DetailInvoice from './pages/DetailInvoice';
 
-if (getDataLocalStorage({ key: 'token' })) {
-  setAuthToken(getDataLocalStorage({ key: 'token' }));
+const token = getDataLocalStorage({ key: 'token' });
+if (token) {
+  setAuthToken(token);
 }
 function App() {
   return (
@@ -27,6 +30,11 @@ function App() {
         <PrivateRoute exact path="/profile" component={Profile} />
         <PrivateRoute exact path="/booking" component={MyBooking} />
         <PrivateRoute exact path="/history" component={MyHistory} />
+        <PrivateRoute
+          exact
+          path="/detail-invoice/:id"
+          component={DetailInvoice}
+        />
 
         {/* route owner */}
         <PrivateRoute exact path="/owner" component={Owner} />
@@ -35,7 +43,11 @@ function App() {
         {/* route owner house */}
         <PrivateRoute exact path="/owner/my-house" component={MyHouse} />
         <PrivateRoute exact path="/owner/add" component={AddProperty} />
-        <PrivateRoute exact path="/owner/my-house/detail/:id" component={DetailProperty} />
+        <PrivateRoute
+          exact
+          path="/owner/my-house/detail/:id"
+          component={DetailProperty}
+        />
       </Switch>
     </Router>
   );

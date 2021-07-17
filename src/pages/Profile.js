@@ -1,6 +1,7 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { Col, Container, Image, Row } from 'react-bootstrap';
 import { useMutation, useQuery } from 'react-query';
+import { io } from 'socket.io-client';
 
 import { SearchContext } from '../contexts/SearchContext';
 import { HIDE, SHOW } from '../contexts/SearchContext/action';
@@ -11,15 +12,39 @@ import Biodata from '../components/Biodata';
 import ButtonReuse from '../components/utils/ButtonReuse';
 import { API } from '../config';
 import { UPDATE_PHOTO } from '../contexts/UserContext/action';
+import { getDataLocalStorage } from '../helper';
 
 const Profile = () => {
+  const socket = useRef();
   const { dispatch: dispatchSearch } = useContext(SearchContext);
-  const { dispatch: dispatchUser } = useContext(UserContext);
+  const { state: stateUser, dispatch: dispatchUser } = useContext(UserContext);
 
   useEffect(() => {
     dispatchSearch({ type: HIDE });
+    if (stateUser.user.role === 'owner') {
+      // connect socket and trigger
+      const user = getDataLocalStorage({ key: 'user' });
+      const token = getDataLocalStorage({ key: 'token' });
+
+      socket.current = io.connect('http://localhost:5000', {
+        transports: ['websocket'],
+        query: {
+          token,
+          email: user.email,
+        },
+      });
+
+      socket.current.emit(
+        'load-notification',
+        getDataLocalStorage({ key: 'user' }).email,
+      );
+      // end trigger
+    }
     return () => {
       dispatchSearch({ type: SHOW });
+      if (stateUser.user.role === 'owner') {
+        socket.current.disconnect();
+      }
     };
   }, []);
 

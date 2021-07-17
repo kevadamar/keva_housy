@@ -1,7 +1,8 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Container, Table, Modal } from 'react-bootstrap';
 import { QueryClient, useMutation, useQuery } from 'react-query';
 import { useHistory } from 'react-router-dom';
+import { io } from 'socket.io-client';
 
 import ButtonReuse from '../components/utils/ButtonReuse';
 import Loader from '../components/utils/Loader';
@@ -9,8 +10,10 @@ import { API } from '../config';
 import { SearchContext } from '../contexts/SearchContext';
 import { HIDE, SHOW } from '../contexts/SearchContext/action';
 import { UserContext } from '../contexts/UserContext';
+import { getDataLocalStorage } from '../helper';
 
 const MyHouse = () => {
+  const socket = useRef();
   const router = useHistory();
   const queryClient = new QueryClient();
 
@@ -47,8 +50,27 @@ const MyHouse = () => {
       router.push('/');
     }
 
+    // connect socket and trigger
+    const user = getDataLocalStorage({ key: 'user' });
+    const token = getDataLocalStorage({ key: 'token' });
+
+    socket.current = io.connect('http://localhost:5000', {
+      transports: ['websocket'],
+      query: {
+        token,
+        email: user.email,
+      },
+    });
+
+    socket.current.emit(
+      'load-notification',
+      getDataLocalStorage({ key: 'user' }).email,
+    );
+    // end trigger
+
     return () => {
       dispatch({ type: SHOW });
+      socket.current.disconnect();
       handleResetCache();
     };
   }, []);
@@ -181,7 +203,7 @@ const MyHouse = () => {
             <ButtonReuse
               onClick={nextPage}
               disabled={
-                data?.length <= 4 || (countData > 0 && countData === 5)
+                data?.length <= 4 || (countData > 0 && 5 * page === countData)
                   ? true
                   : false
               }

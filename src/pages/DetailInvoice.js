@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 import { useQuery } from 'react-query';
 
@@ -8,46 +8,24 @@ import { SearchContext } from '../contexts/SearchContext';
 import { API } from '../config';
 import Loader from '../components/utils/Loader';
 import { UserContext } from '../contexts/UserContext';
-import { getDataLocalStorage } from '../helper';
-import { io } from 'socket.io-client';
+import { useParams } from 'react-router-dom';
 
-const MyHistory = () => {
-  const socket = useRef();
+const DetailInvoice = () => {
+  const { id } = useParams();
 
   const { dispatch: dispatchSearch } = useContext(SearchContext);
   const { state: stateUser } = useContext(UserContext);
 
   useEffect(() => {
     dispatchSearch({ type: HIDE });
-    if (stateUser.user.role === 'owner') {
-      // connect socket and trigger
-      const user = getDataLocalStorage({ key: 'user' });
-      const token = getDataLocalStorage({ key: 'token' });
-
-      socket.current = io.connect('http://localhost:5000', {
-        transports: ['websocket'],
-        query: {
-          token,
-          email: user.email,
-        },
-      });
-
-      socket.current.emit(
-        'load-notification',
-        getDataLocalStorage({ key: 'user' }).email,
-      );
-      // end trigger
-    }
-
     return () => {
       dispatchSearch({ type: SHOW });
-      if (stateUser.user.role === 'owner') socket.current.disconnect();
     };
   }, []);
 
-  const fetchData = async () => {
+  const fetchData = async (id) => {
     try {
-      const response = await API.get(`orders`);
+      const response = await API.get(`order/${id}`);
 
       if (response.status !== 200) {
         throw new Error('An error has occured');
@@ -58,7 +36,10 @@ const MyHistory = () => {
     }
   };
 
-  const { isLoading, data, isError, isSuccess } = useQuery('orders', fetchData);
+  const { isLoading, data, isError, isSuccess } = useQuery(
+    ['detail-invoice', id],
+    () => fetchData(id),
+  );
 
   return (
     <Container
@@ -68,14 +49,7 @@ const MyHistory = () => {
     >
       {isLoading && <Loader />}
       {isError && <h2>There was an error processing your request....</h2>}
-      {isSuccess &&
-        data.map((book) => {
-          return (
-            <span key={book.id}>
-              <CustomCardBox book={book} type="history" />
-            </span>
-          );
-        })}
+      {isSuccess && <CustomCardBox book={data} type="detailInvoice" />}
       {isSuccess && data.length === 0 && (
         <h2 style={{ textAlign: 'center' }}>
           {stateUser.user.role === 'tenant'
@@ -87,4 +61,4 @@ const MyHistory = () => {
   );
 };
 
-export default MyHistory;
+export default DetailInvoice;

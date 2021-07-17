@@ -1,16 +1,21 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Container, Form, Button, Modal } from 'react-bootstrap';
 import { Controller, useForm } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import Select from 'react-select';
+import { io } from 'socket.io-client';
+
 import { API } from '../../config';
 import { SearchContext } from '../../contexts/SearchContext';
 import { HIDE, SHOW } from '../../contexts/SearchContext/action';
+import { UserContext } from '../../contexts/UserContext';
+import { getDataLocalStorage } from '../../helper';
 import ButtonReuse from '../utils/ButtonReuse';
 import Styles from './AddProperty.module.css';
 
 const AddProperty = () => {
+  const socket = useRef();
   const router = useHistory();
 
   const [payload, setPayload] = useState({
@@ -32,6 +37,7 @@ const AddProperty = () => {
   const [fourthImage, setFourthImage] = useState({ file: '', fileUrl: '' });
 
   const { dispatch: dispatchSearch } = useContext(SearchContext);
+  const { state: stateUser } = useContext(UserContext);
 
   const dataTypeRent = [
     { label: 'Day', value: 'Day' },
@@ -48,8 +54,30 @@ const AddProperty = () => {
 
   useEffect(() => {
     dispatchSearch({ type: HIDE });
+    if (stateUser.user.role === 'tenant') {
+      router.push('/');
+    }
+
+    // connect socket and trigger
+    const user = getDataLocalStorage({ key: 'user' });
+    const token = getDataLocalStorage({ key: 'token' });
+
+    socket.current = io.connect('http://localhost:5000', {
+      transports: ['websocket'],
+      query: {
+        token,
+        email: user.email,
+      },
+    });
+
+    socket.current.emit(
+      'load-notification',
+      getDataLocalStorage({ key: 'user' }).email,
+    );
+    // end trigger
     return () => {
       dispatchSearch({ type: SHOW });
+      socket.current.disconnect();
     };
   }, []);
 

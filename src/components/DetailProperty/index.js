@@ -1,30 +1,54 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Container, Form, Button, Modal } from 'react-bootstrap';
 import { useQuery } from 'react-query';
 import { useHistory, useParams } from 'react-router-dom';
+import { io } from 'socket.io-client';
 
 import { API } from '../../config';
 import { SearchContext } from '../../contexts/SearchContext';
 import { HIDE, SHOW } from '../../contexts/SearchContext/action';
+import { UserContext } from '../../contexts/UserContext';
+import { getDataLocalStorage } from '../../helper';
 import Loader from '../utils/Loader';
 
 const DetailProperty = () => {
+  const socket = useRef();
   const router = useHistory();
   const { id } = useParams();
 
   const [show, setshow] = useState(false);
 
-  const [firstImage, setFirstImage] = useState({ file: '', fileUrl: '' });
-  const [secondImage, setSecondImage] = useState({ file: '', fileUrl: '' });
-  const [thirdImage, setThirdImage] = useState({ file: '', fileUrl: '' });
-  const [fourthImage, setFourthImage] = useState({ file: '', fileUrl: '' });
-
+  const { state: stateUser } = useContext(UserContext);
   const { dispatch: dispatchSearch } = useContext(SearchContext);
 
   useEffect(() => {
     dispatchSearch({ type: HIDE });
+
+    if (stateUser.user.role === 'tenant') {
+      router.push('/');
+    }
+
+    // connect socket and trigger
+    const user = getDataLocalStorage({ key: 'user' });
+    const token = getDataLocalStorage({ key: 'token' });
+
+    socket.current = io.connect('http://localhost:5000', {
+      transports: ['websocket'],
+      query: {
+        token,
+        email: user.email,
+      },
+    });
+
+    socket.current.emit(
+      'load-notification',
+      getDataLocalStorage({ key: 'user' }).email,
+    );
+    // end trigger
+
     return () => {
       dispatchSearch({ type: SHOW });
+      socket.current.disconnect();
     };
   }, []);
 
