@@ -4,6 +4,8 @@ import { QueryClient, useMutation, useQuery } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { io } from 'socket.io-client';
 
+import noHomes from '../assets/images/no-homes.png';
+
 import ButtonReuse from '../components/utils/ButtonReuse';
 import Loader from '../components/utils/Loader';
 import { API } from '../config';
@@ -189,7 +191,12 @@ const MyHouse = () => {
         )}
         {isLoading && <Loader />}
         {isError && <h2>There was an error processing your request....</h2>}
-        {isSuccess && data?.length === 0 && <h2>No Data Your House</h2>}
+        {isSuccess && data?.length === 0 && (
+          <span className="d-flex flex-column align-items-center">
+            <img src={noHomes} alt="no data house" />
+            <h2>No Data Your House</h2>
+          </span>
+        )}
         {isSuccess && data?.length > 0 && (
           <Container fluid>
             <div></div>

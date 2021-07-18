@@ -1,8 +1,11 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Container, Table } from 'react-bootstrap';
-import { QueryClient, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { io } from 'socket.io-client';
+
+import noTransaction from '../assets/images/no-transaction.webp';
+
 import ModalApproval from '../components/ModalApproval';
 import ButtonReuse from '../components/utils/ButtonReuse';
 import Loader from '../components/utils/Loader';
@@ -15,7 +18,6 @@ import { getDataLocalStorage } from '../helper';
 const Owner = () => {
   const socket = useRef();
   const router = useHistory();
-  const queryClient = new QueryClient();
 
   const { dispatch } = useContext(SearchContext);
   const { state: stateUser } = useContext(UserContext);
@@ -43,11 +45,6 @@ const Owner = () => {
     setShow(false);
   };
 
-  const handleResetCache = async () => {
-    console.log('remove cache');
-    await queryClient.removeQueries(['orders', 1], { exact: true });
-  };
-
   useEffect(() => {
     dispatch({ type: HIDE });
     if (stateUser.user.role === 'tenant') {
@@ -65,10 +62,7 @@ const Owner = () => {
       },
     });
 
-    socket.current.emit(
-      'load-notification',
-      getDataLocalStorage({ key: 'user' }).email,
-    );
+    socket.current.emit('load-notification', user.email);
     // end trigger
 
     return () => {
@@ -78,7 +72,6 @@ const Owner = () => {
       socket.current.disconnect();
       setPage(1);
       setCountData(0);
-      handleResetCache();
     };
   }, []);
 
@@ -175,7 +168,12 @@ const Owner = () => {
         )}
         {isLoading && <Loader />}
         {isError && <h2>There was an error processing your request....</h2>}
-        {isSuccess && data?.length === 0 && <h2>No Data Transaction</h2>}
+        {isSuccess && data?.length === 0 && (
+          <span className="d-flex flex-column align-items-center">
+            <img src={noTransaction} alt="no transaction" />
+            <h2>No Data Transaction</h2>
+          </span>
+        )}
         {isSuccess && data?.length > 0 && (
           <Container fluid>
             <div></div>

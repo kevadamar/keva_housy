@@ -1,6 +1,9 @@
 import { useContext, useEffect, useRef } from 'react';
 import { Container } from 'react-bootstrap';
 import { useQuery } from 'react-query';
+import { io } from 'socket.io-client';
+
+import noHistory from '../assets/images/no-history.png';
 
 import CustomCardBox from '../components/CustomCardBox';
 import { HIDE, SHOW } from '../contexts/SearchContext/action';
@@ -9,7 +12,6 @@ import { API } from '../config';
 import Loader from '../components/utils/Loader';
 import { UserContext } from '../contexts/UserContext';
 import { getDataLocalStorage } from '../helper';
-import { io } from 'socket.io-client';
 
 const MyHistory = () => {
   const socket = useRef();
@@ -77,11 +79,14 @@ const MyHistory = () => {
           );
         })}
       {isSuccess && data.length === 0 && (
-        <h2 style={{ textAlign: 'center' }}>
-          {stateUser.user.role === 'tenant'
-            ? 'Oppsss.. Coba menginap terlebih dahulu'
-            : 'No Data History...'}
-        </h2>
+        <span className="d-flex flex-column align-items-center">
+          <img src={noHistory} alt="no history" />
+          <h2>
+            {stateUser.user.role === 'tenant'
+              ? 'Oppsss.. Coba menginap terlebih dahulu'
+              : 'No Data History...'}
+          </h2>
+        </span>
       )}
     </Container>
   );

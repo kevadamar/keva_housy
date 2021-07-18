@@ -13,11 +13,16 @@ const DropdownNotification = ({ data, onClick }) => {
           style={{
             padding: '10px',
             paddingBottom: '5px',
-            boxShadow: ' 0 -4px 17px 0 skyblue',
+            boxShadow: '0 9px 0 0 skyblue',
           }}
         >
           Notifikasi
         </h3>
+        {data?.length === 0 && (
+          <div className={Styles.noNotif}>
+            <p className={Styles.textMenu}>0 Pending</p>
+          </div>
+        )}
         {data?.length > 0 &&
           data?.map((notification, idx) => (
             <div

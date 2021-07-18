@@ -2,6 +2,8 @@ import { useContext, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 import { useQuery } from 'react-query';
 
+import noBooking from '../assets/images/no-booking.png';
+
 import CustomCardBox from '../components/CustomCardBox';
 import { SearchContext } from '../contexts/SearchContext';
 import { HIDE, SHOW } from '../contexts/SearchContext/action';
@@ -50,9 +52,10 @@ const MyBooking = () => {
           );
         })}
       {isSuccess && data.length === 0 && (
-        <h2 style={{ textAlign: 'center' }}>
-          Oppsss.. Coba booking terlebih dahulu
-        </h2>
+        <span className="d-flex flex-column align-items-center">
+          <img src={noBooking} alt="no booking" />
+          <h2>Oppsss.. Coba booking terlebih dahulu</h2>
+        </span>
       )}
     </Container>
   );

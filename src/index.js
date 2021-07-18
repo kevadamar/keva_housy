@@ -20,7 +20,7 @@ ReactDOM.render(
           <App />
         </SearchContextProvider>
       </UserContextProvider>
-      <ReactQueryDevtools />
+      {/* <ReactQueryDevtools /> */}
     </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById('root'),

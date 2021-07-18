@@ -40,7 +40,7 @@
   transform: rotate(180deg);
 }
 
-.dropdownMenu {
+.dropdownMenu,.noNotif {
   position: relative;
   display: flex;
   flex-direction: row;

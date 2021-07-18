@@ -169,7 +169,11 @@ const Header = () => {
       </Link>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        <Form className="d-flex m-auto" onSubmit={handleSubmit}>
+        <Form
+          className="d-flex m-auto"
+          autoComplete="false"
+          onSubmit={handleSubmit}
+        >
           {showSearch && (
             <InputGroup className={Styles.inputGroup}>
               <FormControl
@@ -180,9 +184,10 @@ const Header = () => {
                 name="search"
                 value={getSearch}
                 onChange={handleSearch}
+                autoComplete="false"
               />
               <span className={`${Styles.separator} bg-identity`}>|</span>
-              <InputGroup.Append className={Styles.inputGroupAppend}>
+              <InputGroup.Append className={Styles.inputGroupAppend} auto>
                 <Button
                   id="search-button"
                   type="submit"
@@ -199,7 +204,7 @@ const Header = () => {
           <>
             {stateUser.user.role === 'owner' && (
               <>
-                <BadgeNotification/>
+                <BadgeNotification />
               </>
             )}
             <img
