@@ -79,7 +79,7 @@ const BadgeNotification = ({ onClick }) => {
         <i
           className="fa fa-bell"
           style={{
-            color: '#2FC5F7',
+            color: '#5A57AB',
             cursor: 'pointer',
             fontSize: '1.3em',
           }}

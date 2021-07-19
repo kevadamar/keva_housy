@@ -121,15 +121,19 @@ const Profile = () => {
                 className="mt-5"
                 style={{
                   backgroundColor: '#5A57AB',
+                  borderColor: '#5A57AB',
                   color: 'white',
                   textAlign: 'center',
                 }}
                 block
               >
+                <label htmlFor="fileInput" style={{ cursor: 'pointer' }}>
+                  <span>Change Photo Profile</span>
+                </label>
                 <input
-                  style={{ opacity: 1 }}
+                  id="fileInput"
+                  style={{ opacity: 1, display: 'none' }}
                   type="file"
-                  className="custom-file-input"
                   onChange={handleFile}
                 />
               </ButtonReuse>

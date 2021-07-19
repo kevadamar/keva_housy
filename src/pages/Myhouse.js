@@ -12,7 +12,7 @@ import { API } from '../config';
 import { SearchContext } from '../contexts/SearchContext';
 import { HIDE, SHOW } from '../contexts/SearchContext/action';
 import { UserContext } from '../contexts/UserContext';
-import { getDataLocalStorage } from '../helper';
+import { formatNumberToIDR, getDataLocalStorage } from '../helper';
 
 const MyHouse = () => {
   const socket = useRef();
@@ -134,7 +134,15 @@ const MyHouse = () => {
       <Container className="py-5">
         <Container className="d-flex justify-content-between mb-2">
           <h4>My Houses</h4>
-          <ButtonReuse onClick={() => router.push('/owner/add')}>
+          <ButtonReuse
+            onClick={() => router.push('/owner/add')}
+            style={{
+              backgroundColor: '#5A57AB',
+              borderColor: '#5A57AB',
+              color: 'white',
+              textAlign: 'center',
+            }}
+          >
             Add House
           </ButtonReuse>
         </Container>
@@ -142,11 +150,13 @@ const MyHouse = () => {
           <Table striped responsive="md" style={{ textAlign: 'center' }}>
             <thead style={{ backgroundColor: 'white' }}>
               <tr>
-                <th>No</th>
-                <th>Image</th>
-                <th>House Name</th>
-                <th>Price</th>
-                <th colSpan="2">Action</th>
+                <th style={{ width: '5%' }}>No</th>
+                <th style={{ width: '10%' }}>Image</th>
+                <th style={{ width: '30%' }}>House Name</th>
+                <th style={{ width: '20%' }}>Price</th>
+                <th style={{ width: '10%' }} colSpan="2">
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -167,11 +177,11 @@ const MyHouse = () => {
                     />
                   </td>
                   <td>{item.name}</td>
-                  <td>{item.price}</td>
+                  <td>Rp.{formatNumberToIDR(item.price)}</td>
                   <td>
                     <i
                       className="fa fa-eye"
-                      style={{ color: '#2FC5F7', cursor: 'pointer' }}
+                      style={{ color: '#5A57AB', cursor: 'pointer' }}
                       onClick={() =>
                         router.push(`/owner/my-house/detail/${item.id}`)
                       }
@@ -180,7 +190,7 @@ const MyHouse = () => {
                   <td>
                     <i
                       className="fa fa-trash-o"
-                      style={{ color: '#2FC5F7', cursor: 'pointer' }}
+                      style={{ color: '#5A57AB', cursor: 'pointer' }}
                       onClick={() => handleDelete(item.id)}
                     ></i>
                   </td>
@@ -202,6 +212,12 @@ const MyHouse = () => {
             <div></div>
             <ButtonReuse
               onClick={previousPage}
+              style={{
+                backgroundColor: '#5A57AB',
+                borderColor: '#5A57AB',
+                color: 'white',
+                textAlign: 'center',
+              }}
               disabled={page === 1 ? true : false}
             >
               Previous
@@ -209,6 +225,12 @@ const MyHouse = () => {
             <span className="px-2">{page}</span>
             <ButtonReuse
               onClick={nextPage}
+              style={{
+                backgroundColor: '#5A57AB',
+                borderColor: '#5A57AB',
+                color: 'white',
+                textAlign: 'center',
+              }}
               disabled={
                 data?.length <= 4 || (countData > 0 && 5 * page === countData)
                   ? true

@@ -187,7 +187,7 @@ const Header = () => {
                 autoComplete="false"
               />
               <span className={`${Styles.separator} bg-identity`}>|</span>
-              <InputGroup.Append className={Styles.inputGroupAppend} auto>
+              <InputGroup.Append className={Styles.inputGroupAppend}>
                 <Button
                   id="search-button"
                   type="submit"

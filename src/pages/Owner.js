@@ -99,25 +99,21 @@ const Owner = () => {
     <Container
       fluid
       className="bg-identity"
-      style={{ height: isSuccess && data.length <= 10 && '87vh' }}
+      style={{ height: '87vh' }}
     >
       <Container className="py-5">
         <h4>Incoming Transaction</h4>
         {isSuccess && data?.length > 0 && (
-          <Table
-            striped
-            responsive="md"
-            style={{ textAlign: 'center', height: '400px' }}
-          >
+          <Table striped responsive="md" style={{ textAlign: 'center' }}>
             <thead style={{ backgroundColor: 'white' }}>
               <tr>
-                <th>No</th>
-                <th>Users</th>
-                <th>House</th>
-                <th>Type Of Rent</th>
-                <th>Bukti Transfer</th>
-                <th>Status Payment</th>
-                <th>Action</th>
+                <th style={{ width: '5%' }}>No</th>
+                <th style={{ width: '25%' }}>Users</th>
+                <th style={{ width: '25%' }}>House</th>
+                <th style={{ width: '10%' }}>Type Rent</th>
+                <th style={{ width: '13%' }}>Bukti Transfer</th>
+                <th style={{ width: '13%' }}>Status Payment</th>
+                <th style={{ width: '7%' }}>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -134,7 +130,12 @@ const Owner = () => {
                   <td>{item.house.name}</td>
                   <td>{item.house.typeRent}</td>
                   <td>
-                    <a href={item.attachment} rel="noreferrer" target="_blank">
+                    <a
+                      href={item.attachment}
+                      style={{ color: '#5A57AB', textDecoration: 'none' }}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
                       Show Proof
                     </a>
                   </td>
@@ -157,7 +158,7 @@ const Owner = () => {
                   <td>
                     <i
                       className="fa fa-search"
-                      style={{ color: '#2FC5F7', cursor: 'pointer' }}
+                      style={{ color: '#5A57AB', cursor: 'pointer' }}
                       onClick={() => handleClick(item.id)}
                     ></i>
                   </td>
@@ -179,6 +180,12 @@ const Owner = () => {
             <div></div>
             <ButtonReuse
               onClick={previousPage}
+              style={{
+                backgroundColor: '#5A57AB',
+                borderColor: '#5A57AB',
+                color: 'white',
+                textAlign: 'center',
+              }}
               disabled={page === 1 ? true : false}
             >
               Previous
@@ -186,6 +193,12 @@ const Owner = () => {
             <span className="px-2">{page}</span>
             <ButtonReuse
               onClick={nextPage}
+              style={{
+                backgroundColor: '#5A57AB',
+                borderColor: '#5A57AB',
+                color: 'white',
+                textAlign: 'center',
+              }}
               disabled={
                 data?.length <= 4 || (countData > 0 && 5 * page === countData)
                   ? true

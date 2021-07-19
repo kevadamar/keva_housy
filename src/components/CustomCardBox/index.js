@@ -2,6 +2,8 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { Container, Modal, Table } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import QRCode from 'qrcode.react';
+import { useMutation } from 'react-query';
+import { io } from 'socket.io-client';
 
 import ButtonReuse from '../utils/ButtonReuse';
 
@@ -13,8 +15,6 @@ import ellipseEnd from '../../assets/images/ellipse-end.svg';
 import Styles from './CustomCard.module.css';
 import { UserContext } from '../../contexts/UserContext';
 import { API } from '../../config';
-import { useMutation } from 'react-query';
-import { io } from 'socket.io-client';
 import { getDataLocalStorage } from '../../helper';
 
 const CustomCardBox = ({ book, pushTo, type }) => {
@@ -323,6 +323,7 @@ const CustomCardBox = ({ book, pushTo, type }) => {
                     className="font-weight-bold"
                     style={{
                       backgroundColor: '#5A57AB',
+                      borderColor: '#5A57AB',
                       color: ' white',
                       marginTop: '5px',
                       padding: '0 40px',
@@ -455,6 +456,7 @@ const CustomCardBox = ({ book, pushTo, type }) => {
               className="font-weight-bold"
               style={{
                 backgroundColor: '#5A57AB',
+                borderColor: '#5A57AB',
                 color: ' white',
                 padding: '10px 65px',
               }}

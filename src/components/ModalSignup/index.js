@@ -165,7 +165,7 @@ const ModalSignup = ({ show, handleClose, handleTo, handleSubmitSignup }) => {
               className={`${Styles.select} bg-identity font-weight-bold`}
               {...register('role_id', { required: 'List As is required' })}
             >
-              <option value=''>Select</option>
+              <option value="">Select</option>
               {isSuccess &&
                 data.map((role) => (
                   <option key={role.id} value={role.id}>
@@ -184,7 +184,7 @@ const ModalSignup = ({ show, handleClose, handleTo, handleSubmitSignup }) => {
               className={`${Styles.select} bg-identity font-weight-bold`}
               {...register('gender', { required: 'Gender is required' })}
             >
-              <option value=''>Select</option>
+              <option value="">Select</option>
               <option value="male">Laki-Laki</option>
               <option value="female">Perempuan</option>
             </Form.Control>
@@ -224,7 +224,11 @@ const ModalSignup = ({ show, handleClose, handleTo, handleSubmitSignup }) => {
           <Container fluid className="px-0 pt-1">
             <ButtonReuse
               className="font-weight-bold my-2"
-              style={{ backgroundColor: '#5A57AB', color: ' white' }}
+              style={{
+                backgroundColor: '#5A57AB',
+                color: ' white',
+                borderColor: '#5A57AB',
+              }}
               block
               onClick={handleSubmit(onSubmit)}
               disabled={isSubmitting}

@@ -106,7 +106,11 @@ const ModalSignin = ({ show, handleClose, handleTo, handleSubmitLogin }) => {
           <Container fluid className="px-0 pt-1">
             <ButtonReuse
               className="font-weight-bold"
-              style={{ backgroundColor: '#5A57AB', color: ' white' }}
+              style={{
+                backgroundColor: '#5A57AB',
+                color: ' white',
+                borderColor: '#5A57AB',
+              }}
               block
               disabled={isSubmitting}
               onClick={handleSubmit(onSubmit)}

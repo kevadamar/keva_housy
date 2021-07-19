@@ -13,7 +13,7 @@ const DropdownNotification = ({ data, onClick }) => {
           style={{
             padding: '10px',
             paddingBottom: '5px',
-            boxShadow: '0 9px 0 0 skyblue',
+            boxShadow: '0 9px 0 0 #5A57AB',
           }}
         >
           Notifikasi
@@ -31,7 +31,7 @@ const DropdownNotification = ({ data, onClick }) => {
               onClick={() => onClick(notification.id)}
             >
               <p className={Styles.textMenu}>
-                {notification.house.name} - {notification.user.username}
+                {notification.house.name} - {notification.user.fullname}
               </p>
               <span
                 className={`${Styles.divider} ${

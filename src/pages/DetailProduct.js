@@ -17,7 +17,11 @@ import { UserContext } from '../contexts/UserContext';
 import { ADD_NEW_USER, LOGIN } from '../contexts/UserContext/action';
 import ModalSignin from '../components/ModalSignin';
 import ModalSignup from '../components/ModalSignup';
-import { changeFormatDate, formatNumberToIDR, saveToLocalStorage } from '../helper';
+import {
+  changeFormatDate,
+  formatNumberToIDR,
+  saveToLocalStorage,
+} from '../helper';
 import { API } from '../config';
 import Loader from '../components/utils/Loader';
 
@@ -126,8 +130,10 @@ const DetailProduct = () => {
 
   // handle submit login
   const handleSubmitSignin = (payload) => {
-    dispatchUser({ type: LOGIN, payload });
-    saveToLocalStorage({ key: 'user', payload });
+    const { user, token } = payload;
+    dispatchUser({ type: LOGIN, payload: user });
+    saveToLocalStorage({ key: 'user', payload: user });
+    saveToLocalStorage({ key: 'token', payload: token });
     handleModalShow({ name: show.nameSignIn });
   };
 

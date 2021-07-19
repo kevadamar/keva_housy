@@ -21,3 +21,18 @@
   vertical-align: bottom;
   position: absolute;
 }
+
+.imageWrapper {
+  width: 207px;
+  height: 145px;
+
+  display: flex;
+  justify-content: center;
+
+  box-sizing: border-box;
+  object-fit: cover;
+}
+
+.imageWrapperBooking {
+  background-color: lightgray;
+}

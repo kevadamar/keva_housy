@@ -89,8 +89,8 @@
 .iconBadge {
   top: -11px !important;
   right: 12px !important;
-  background: yellow;
-  color: rgb(10 118 153);
+  background: #908cf6;
+  color: rgb(255, 255, 255);
   border-radius: 10px;
 }
 

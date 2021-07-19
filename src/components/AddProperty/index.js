@@ -148,7 +148,7 @@ const AddProperty = () => {
       }));
     }
     console.log(e.target.checked, payload.amenities.length);
-    if (payload.amenities.length === 1&& !e.target.checked) {
+    if (payload.amenities.length === 1 && !e.target.checked) {
       setErrorAmenities(true);
     }
   };
@@ -452,9 +452,10 @@ const AddProperty = () => {
               <Container fluid className="d-flex px-0">
                 <Container
                   fluid
-                  className="px-0 mx-2 d-flex justify-content-center align-items-center"
+                  className="px-0 mx-2 d-flex justify-content-center"
                   style={{
                     width: '45%',
+                    height: '200px',
                     border: '1px solid black',
                     borderRadius: '25px',
                     position: 'relative',
@@ -465,8 +466,6 @@ const AddProperty = () => {
                     className="d-flex flex-column justify-content-center align-items-center"
                     style={{
                       cursor: !firstImage.file && 'pointer',
-                      width: '100%',
-                      height: '190px',
                     }}
                   >
                     {!firstImage.file ? (
@@ -507,11 +506,15 @@ const AddProperty = () => {
                       </>
                     ) : (
                       <>
-                        <img
-                          style={{ objectFit: 'contain', width: '100%' }}
-                          src={firstImage.fileUrl}
-                          alt="First Img"
-                        />
+                        <div
+                          className={`${Styles.imageWrapper} ${Styles.imageWrapperBooking}`}
+                        >
+                          <img
+                            style={{ objectFit: 'contain', width: '100%' }}
+                            src={firstImage.fileUrl}
+                            alt="main pic"
+                          />
+                        </div>
                         <span
                           style={{
                             position: 'absolute',
@@ -536,11 +539,13 @@ const AddProperty = () => {
                     )}
                   </div>
                 </Container>
+
                 <Container
                   fluid
-                  className="px-0 mx-2 d-flex justify-content-center align-items-center"
+                  className="px-0 mx-2 d-flex justify-content-center"
                   style={{
                     width: '45%',
+                    height: '200px',
                     border: '1px solid black',
                     borderRadius: '25px',
                     position: 'relative',
@@ -551,8 +556,6 @@ const AddProperty = () => {
                     className="d-flex flex-column justify-content-center align-items-center"
                     style={{
                       cursor: !secondImage.file && 'pointer',
-                      width: '100%',
-                      height: '190px',
                     }}
                   >
                     {!secondImage.file ? (
@@ -592,11 +595,15 @@ const AddProperty = () => {
                       </>
                     ) : (
                       <>
-                        <img
-                          style={{ objectFit: 'contain', width: '100%' }}
-                          src={secondImage.fileUrl}
-                          alt="First Img"
-                        />
+                        <div
+                          className={`${Styles.imageWrapper} ${Styles.imageWrapperBooking}`}
+                        >
+                          <img
+                            style={{ objectFit: 'contain', width: '100%' }}
+                            src={secondImage.fileUrl}
+                            alt="second pic"
+                          />
+                        </div>
                         <span
                           style={{
                             position: 'absolute',
@@ -611,9 +618,9 @@ const AddProperty = () => {
                             className="fa fa-times-circle"
                             aria-hidden="true"
                             style={{ cursor: 'pointer' }}
-                            onClick={() =>
-                              setSecondImage({ file: '', fileUrl: '' })
-                            }
+                            onClick={() => {
+                              setSecondImage({ file: '', fileUrl: '' });
+                            }}
                           ></i>
                         </span>
                       </>
@@ -623,9 +630,10 @@ const AddProperty = () => {
 
                 <Container
                   fluid
-                  className="px-0 mx-2 d-flex justify-content-center align-items-center"
+                  className="px-0 mx-2 d-flex justify-content-center"
                   style={{
                     width: '45%',
+                    height: '200px',
                     border: '1px solid black',
                     borderRadius: '25px',
                     position: 'relative',
@@ -636,8 +644,6 @@ const AddProperty = () => {
                     className="d-flex flex-column justify-content-center align-items-center"
                     style={{
                       cursor: !thirdImage.file && 'pointer',
-                      width: '100%',
-                      height: '190px',
                     }}
                   >
                     {!thirdImage.file ? (
@@ -677,11 +683,15 @@ const AddProperty = () => {
                       </>
                     ) : (
                       <>
-                        <img
-                          style={{ objectFit: 'contain', width: '100%' }}
-                          src={thirdImage.fileUrl}
-                          alt="First Img"
-                        />
+                        <div
+                          className={`${Styles.imageWrapper} ${Styles.imageWrapperBooking}`}
+                        >
+                          <img
+                            style={{ objectFit: 'contain', width: '100%' }}
+                            src={thirdImage.fileUrl}
+                            alt="third pic"
+                          />
+                        </div>
                         <span
                           style={{
                             position: 'absolute',
@@ -696,20 +706,22 @@ const AddProperty = () => {
                             className="fa fa-times-circle"
                             aria-hidden="true"
                             style={{ cursor: 'pointer' }}
-                            onClick={() =>
-                              setThirdImage({ file: '', fileUrl: '' })
-                            }
+                            onClick={() => {
+                              setThirdImage({ file: '', fileUrl: '' });
+                            }}
                           ></i>
                         </span>
                       </>
                     )}
                   </div>
                 </Container>
+
                 <Container
                   fluid
-                  className="px-0 mx-2 d-flex justify-content-center align-items-center"
+                  className="px-0 mx-2 d-flex justify-content-center"
                   style={{
                     width: '45%',
+                    height: '200px',
                     border: '1px solid black',
                     borderRadius: '25px',
                     position: 'relative',
@@ -720,8 +732,6 @@ const AddProperty = () => {
                     className="d-flex flex-column justify-content-center align-items-center"
                     style={{
                       cursor: !fourthImage.file && 'pointer',
-                      width: '100%',
-                      height: '190px',
                     }}
                   >
                     {!fourthImage.file ? (
@@ -761,11 +771,15 @@ const AddProperty = () => {
                       </>
                     ) : (
                       <>
-                        <img
-                          style={{ objectFit: 'contain', width: '100%' }}
-                          src={fourthImage.fileUrl}
-                          alt="First Img"
-                        />
+                        <div
+                          className={`${Styles.imageWrapper} ${Styles.imageWrapperBooking}`}
+                        >
+                          <img
+                            style={{ objectFit: 'contain', width: '100%' }}
+                            src={fourthImage.fileUrl}
+                            alt="fourth pic"
+                          />
+                        </div>
                         <span
                           style={{
                             position: 'absolute',
@@ -780,9 +794,9 @@ const AddProperty = () => {
                             className="fa fa-times-circle"
                             aria-hidden="true"
                             style={{ cursor: 'pointer' }}
-                            onClick={() =>
-                              setFourthImage({ file: '', fileUrl: '' })
-                            }
+                            onClick={() => {
+                              setFourthImage({ file: '', fileUrl: '' });
+                            }}
                           ></i>
                         </span>
                       </>
@@ -795,12 +809,13 @@ const AddProperty = () => {
 
             <Container
               fluid
-              className="d-flex px-0 pt-1 justify-content-center"
+              className="px-0 pt-1 d-flex justify-content-center"
             >
               <ButtonReuse
                 className="font-weight-bold my-2"
                 style={{
                   backgroundColor: '#5A57AB',
+                  borderColor: '#5A57AB',
                   color: ' white',
                   width: '50%',
                 }}

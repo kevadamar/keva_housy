@@ -47,8 +47,8 @@ const Biodata = ({ user }) => {
         </span>
         <span className="d-flex flex-column">
           <h5
-            className="mb-0 text-primary"
-            style={{ color: 'grey', cursor: 'pointer' }}
+            className="mb-0"
+            style={{ color: '#5A57AB', cursor: 'pointer' }}
             onClick={() => setShowModal(true)}
           >
             Change Password

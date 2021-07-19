@@ -40,7 +40,8 @@
   transform: rotate(180deg);
 }
 
-.dropdownMenu,.noNotif {
+.dropdownMenu,
+.noNotif {
   position: relative;
   display: flex;
   flex-direction: row;
@@ -49,7 +50,7 @@
   height: 58px;
   border-radius: 5px;
   padding: 10px;
-  color: #2fc5f7;
+  color: #5a57ab;
 }
 
 .dropdownMenu:hover {
@@ -62,6 +63,11 @@
   margin-top: 10px;
   font-size: 15px;
   font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
 }
 
 .divider {

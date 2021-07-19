@@ -91,7 +91,7 @@ const Tenant = () => {
           sm={12}
           style={{
             backgroundColor: 'rgba(196, 196, 196, 0.25)',
-            padding: '20px 20px 0px 20px',
+            padding: '20px 25px 0 20px',
           }}
         >
           {isLoading && <Loader />}
