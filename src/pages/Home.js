@@ -1,37 +1,25 @@
-import { useEffect, useState } from 'react';
-import { Col, Row, Container } from 'react-bootstrap';
-import CardList from '../components/CardList';
-import Sidebar from '../components/Sidebar';
-import { items as data } from '../data';
+import { useContext, useEffect } from 'react';
+import { Container } from 'react-bootstrap';
+import { Redirect, useHistory } from 'react-router-dom';
+
+import { UserContext } from '../contexts/UserContext';
+import Tenant from './Tenant';
+
 const Home = () => {
-  const [payloadDummy, setpayloadDummy] = useState(null);
+  const router = useHistory();
+  const { location } = router;
+
+  const { state: stateUser } = useContext(UserContext);
 
   useEffect(() => {
-    setpayloadDummy(data);
-    return () => {
-      setpayloadDummy(null);
-    };
-  }, [payloadDummy]);
+    if (location.state && stateUser.isLogin) {
+      router.replace(location.state.pathname);
+    }
+  }, []);
 
   return (
     <Container fluid>
-      {payloadDummy && (
-        <Row>
-          <Col md={4} sm={12}>
-            <Sidebar />
-          </Col>
-          <Col
-            md={8}
-            sm={12}
-            style={{
-              backgroundColor: 'rgba(196, 196, 196, 0.25)',
-              padding: '20px 20px 0px 20px',
-            }}
-          >
-            <CardList data={payloadDummy} />
-          </Col>
-        </Row>
-      )}
+      {stateUser.user?.role === 'owner' ? <Redirect to="/owner" /> : <Tenant />}
     </Container>
   );
 };

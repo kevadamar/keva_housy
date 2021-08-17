@@ -12,7 +12,7 @@ main {
 }
 
 .totalBudget {
-  border: 0;
+  border: none !important;
   background-color: rgba(196, 196, 196, 0.25);
   width: 275px;
   height: 18px;
@@ -20,21 +20,23 @@ main {
   border-radius: 5px;
   font-weight: bold;
   margin-left: 7px;
+  outline: none !important;
 }
 
 .buttonApply {
   padding: 15px 50px;
-  margin: 30px 47px 0;
   border: 0;
+  margin: 25px 15px 25px 0;
   font-weight: bold;
   border-radius: 5px;
   cursor: pointer;
   color: white;
-  background-color: #5a57ab;
+  transition: all 0.2s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  background-color: rgba(90, 87, 171, 1);
 }
 
-.input-group {
-  width: 310px;
+.buttonApply:hover {
+  background-color: rgb(70, 68, 141) !important;
 }
 
 .form-control:focus {
@@ -50,22 +52,41 @@ main {
   background-color: rgba(196, 196, 196, 0.25);
 }
 
-textarea:focus,
-textarea.form-control:focus,
-input.form-control:focus,
-input[type='text']:focus,
-input[type='password']:focus,
-input[type='email']:focus,
-input[type='number']:focus,
-[type='text'].form-control:focus,
-[type='password'].form-control:focus,
-[type='email'].form-control:focus,
-[type='tel'].form-control:focus,
-[contenteditable].form-control:focus {
-  box-shadow: none;
-  border: 1px solid;
+.react-datepicker-wrapper {
+  width: 100%;
 }
 
-.react-datepicker-wrapper:focus{
-  outline: 0;
+.overide-btn-color .btn:not(:disabled).active,
+.overide-btn-color .btn-secondary:not(:disabled).active {
+  color: white !important;
+  background-color: #5a57ab !important;
+  border-color: #5a57ab !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.custom-file-input::-webkit-file-upload-button {
+  visibility: hidden;
+}
+.custom-file-input::before {
+  content: 'Change Photo Profile';
+  display: inline-block;
+  /* background: linear-gradient(top, #f9f9f9, #e3e3e3); */
+  border-radius: 3px;
+  color: white;
+  padding-left: 7px;
+  outline: none;
+  white-space: nowrap;
+  --webkit-user-select: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 10pt;
+}
+.custom-file-input:hover::before {
+  cursor: pointer;
+}
+
+
+.modal-90w{
+  max-width: 90% !important;
 }

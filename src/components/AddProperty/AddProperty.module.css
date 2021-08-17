@@ -1,0 +1,38 @@
+.select {
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.inputGroup {
+  position: relative;
+}
+
+.caretDown::before {
+  top: 41px;
+  right: 15px;
+  content: '';
+  border: 13px solid transparent;
+  border-top: 19px solid #5a57ab;
+  margin-left: 2px;
+  margin-bottom: 3px;
+  display: inline-block;
+  vertical-align: bottom;
+  position: absolute;
+}
+
+.imageWrapper {
+  width: 207px;
+  height: 145px;
+
+  display: flex;
+  justify-content: center;
+
+  box-sizing: border-box;
+  object-fit: cover;
+}
+
+.imageWrapperBooking {
+  background-color: lightgray;
+}

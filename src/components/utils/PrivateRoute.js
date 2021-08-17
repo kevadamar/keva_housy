@@ -1,15 +1,20 @@
+import { useContext } from 'react';
 import { Redirect, Route } from 'react-router-dom';
+import { UserContext } from '../../contexts/UserContext';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  const login = false;
+  const { state } = useContext(UserContext);
 
   return (
     <>
       <Route
         {...rest}
-        render={(props) =>
-          login ? <Component {...props} /> : <Redirect to="/" />
-        }
+        render={(props) => {
+          return state.isLogin ? <Component {...props} /> : <Redirect to={{
+            pathname:"/",
+            state: props.location
+          }} />;
+        }}
       />
     </>
   );

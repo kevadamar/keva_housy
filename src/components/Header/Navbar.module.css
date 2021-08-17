@@ -1,0 +1,101 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+}
+
+.separator {
+  font-size: 31px;
+  color: #d2d2d2;
+}
+
+.img {
+  border-radius: 50px;
+  width: 50px;
+}
+
+.img:hover {
+  cursor: pointer;
+  /* transform: scale(1.1); */
+  transition: cubic-bezier(0.075, 0.82, 0.165, 0.5);
+}
+
+.inputGroup {
+  width: 410px;
+}
+
+.searchInput {
+  border: inherit;
+  background-color: rgba(196, 196, 196, 0.25);
+  height: 50px;
+}
+
+.searchInput::placeholder {
+  color: black;
+}
+
+.searchInput:focus {
+  box-shadow: none !important;
+  border: none !important;
+  background-color: rgba(196, 196, 196, 0.25);
+}
+
+.button {
+  padding: 8px 15px;
+  margin-right: 10px;
+  border: 0;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+.fontBold {
+  font-weight: bold;
+}
+
+.signUpBtn {
+  color: black;
+  background-color: rgba(196, 196, 196, 0.25);
+}
+
+.inputGroupAppend {
+  margin-left: 0;
+}
+
+.srcButton {
+  background-color: rgba(196, 196, 196, 0.25);
+  color: black;
+  font-weight: bold;
+  border: inherit;
+  padding-right: 17px;
+  box-shadow: none !important;
+}
+
+.srcButton:hover,
+.srcButton:focus {
+  background-color: rgba(196, 196, 196, 0.25) !important;
+  font-weight: bold;
+  color: black !important;
+  border: none !important;
+  transition: none !important;
+}
+
+.searchBox {
+  width: 355px;
+  background-color: rgba(196, 196, 196, 0.25);
+  border-radius: 5px;
+}
+
+.iconBadge {
+  top: -11px !important;
+  right: 12px !important;
+  background: #908cf6;
+  color: rgb(255, 255, 255);
+  border-radius: 10px;
+}
+
+@media (max-width: 767px) {
+  .inputGroup {
+    width: 91vw;
+  }
+}

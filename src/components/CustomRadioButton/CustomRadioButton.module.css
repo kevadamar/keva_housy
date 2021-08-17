@@ -1,0 +1,28 @@
+.button {
+  background-color: rgba(196, 196, 196, 0.25);
+  color: black;
+  border-color: rgba(196, 196, 196, 0.25);
+  transition: all .2s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  padding: 7px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button input {
+  display: none;
+}
+
+.button:focus,
+.button:hover,
+.button:active,
+.button:not(:disabled):not(.disabled).active,
+.button:not(:disabled).active,
+.button input:focus,
+.button input:active,
+.button input:hover {
+  color: white !important;
+  background-color: #5a57ab !important;
+  border-color: #5a57ab !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
